@@ -1,0 +1,114 @@
+    #principal {
+        width: 950px;
+        border: 2px solid #000000;
+        margin: 0 auto;
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        border-radius: 8px;
+        -webkit-box-shadow: #666 3px 5px 8px;
+        -moz-box-shadow: #666 3px 5px 8px;
+        box-shadow: rgb(228, 223, 213) 3px 5px 8px;
+        background: hsl(35, 17%, 78%);
+        behavior: url(/PIE.htc);
+    }
+    
+    #cabecera {
+        height: 85px;
+        border: 1px solid hsl(175, 76%, 3%);
+        margin: 10px;
+        background: rgb(255, 255, 255);
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        border-radius: 8px;
+        font-family: Arial;
+        font-size: 1em;
+        line-height: 88px;
+    }
+    
+    #menu {
+        margin: 10;
+        height: 50px;
+        border: 1px solid #000000;
+        margin: 10px;
+        background-color: #e940408a;
+        line-height: 51px;
+        text-transform: uppercase;
+    }
+    
+    #menu li {
+        margin-left: 80px;
+        padding-bottom: 9px;
+        display: inline;
+        text-decoration: nome;
+    }
+    
+    .nav_menu a {
+        color: white;
+        font-size: 1.2em;
+        font-weight: 45px;
+        padding: 18px;
+        text-decoration: none;
+    }
+    
+    .nav_menu a {
+        padding: 15PX 68PX;
+    }
+    
+    .nav_menu a:hover {
+        background-color: #c2d0d8;
+    }
+    
+    .nav_menu a:active {
+        background: #b6def5;
+        color: #151616;
+    }
+    
+    #columnaizq {
+        width: 120px;
+        height: 480px;
+        border: 1px solid #000000;
+        margin: 10px;
+        float: left;
+        background: #5b9fc7;
+    }
+    
+    .columnaizq a {
+        font-size: 50px;
+        display: block;
+        color: white;
+        font-size: 1.5em;
+        font-weight: 10px;
+        padding: 25px;
+        text-decoration: none;
+    }
+    
+    .columnaizq a:hover {
+        background: #c2d0d8;
+    }
+    
+    .columnaizq a:active {
+        background: #afdefa;
+        color: #151616;
+    }
+    
+    #columnader {
+        width: 780px;
+        height: 480px;
+        border: 1px solid #000000;
+        margin: 10px;
+        float: right;
+    }
+    
+    .columnader h3 {
+        text-align: center;
+    }
+    
+    .clear {
+        clear: both;
+    }
+    
+    #pie {
+        height: 35px;
+        border: 1px solid #000000;
+        margin: 10px;
+    }

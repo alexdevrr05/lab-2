@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Ejemplo de una aplicación">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio de química</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/interfaz.css">
+</head>
+
+
+<body>
+
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark  justify-content-center">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">Inicio</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation"></button>
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav ms-auto">
+                    <a class="nav-link active" aria-current="page" href="material.html">material</a><br><br>
+                    <a class="nav-link active" aria-current="page" href="reactivo.html">Reactivos</a>
+                    <a class="nav-link active" aria-current="page" href="practica.html">Prácticas</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container my-3">
+        <div class="row">
+            <div class="col-sm-12 col-md-2 col-lg-2 col-xl-2 py-4 bg-white">
+                <input type="text" id="idreactivo" hidden>
+                <h3>Practicas</h3>
+                <form>
+                    <div class="mb-0">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" placeholder="Nombre" autofocus>
+
+                    </div>
+                    <div class="mb-0">
+                        <label for="fecha" class="form-label">Fecha</label>
+                        <input type="date" class="form-control" id="fecha" placeholder="Fecha" autofocus>
+                    </div>
+                
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" type="button" id="btnform">Guardar</button>
+                        <button class="btn btn-success" type="button" id="btnUpdate">Actualizar</button>
+                    </div>
+
+                </form>
+
+            </div>
+            <div class="col-sm-12 col-md-10 col-lg-10 col-xl-10 py-4 bg-white">
+                <h3>Listado de Practicas</h3>
+                <table class="table  table-dark table-striped table-md">
+                    <thead>
+                        <tr>
+
+                            <th class="centrado">Nombre</th>
+                            <th class="centrado">Fecha</th>
+                            
+                            <th class="centrado"></th>
+                            <th class="centrado"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="mylist">
+                        <!-- info -->
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

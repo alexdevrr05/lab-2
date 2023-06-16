@@ -1,0 +1,16 @@
+{
+    "name": "laboratorio",
+    "version": "1.0.0",
+    "description": "Es una palicacion para el inventario de material",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron ."
+    },
+    "author": "Eduardo",
+    "license": "ISC",
+    "dependencies": {
+        "bootstrap": "^5.2.2",
+        "electron": "^21.3.0",
+        "promise-mysql": "^5.2.0"
+    }
+}
