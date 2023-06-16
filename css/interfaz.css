@@ -1,3 +1,10 @@
+/* :root {
+    --scheme: light !important;
+    --darkbg: #2c3645;
+    background-color: #2c3645;
+    color-scheme: var(--scheme) !important;
+} */
+
 body {
     background: #83a4d4;
     /* fallback for old browsers */

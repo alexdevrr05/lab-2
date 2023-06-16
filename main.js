@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, Notification } = require('electron');
 const path = require('path');
-let db = require('./bd/conexionbd')
+let db = require('./bd/conexionbd');
+const { setMainMenu } = require('./js/menu/menu');
 
 let win;
 let winlogin;
@@ -15,14 +16,17 @@ function createWindow() {
             // nodeIntegration: true,
             // contextIsolation:true,
             // devTools:false,
-            preload: path.join(__dirname, './js/index.js'),
-            preload: path.join(__dirname, './js/material.js'),
-            preload: path.join(__dirname, './js/reactivo.js'),
+            preload: path.join(__dirname, './js/preload.js'),
+            // preload: path.join(__dirname, './js/index.js'),
+            // preload: path.join(__dirname, './js/material.js'),
+            // preload: path.join(__dirname, './js/reactivo.js'),
         }
 
     });
 
-    win.loadFile('./html/index.html')
+    win.loadFile('./html/index.html')    
+
+    setMainMenu(win);
 }
 
 function createWindowpractica() {

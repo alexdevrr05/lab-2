@@ -4,7 +4,8 @@
     "description": "Es una palicacion para el inventario de material",
     "main": "main.js",
     "scripts": {
-        "start": "electron ."
+        "start": "electron .",
+        "dev": "electron ."
     },
     "author": "Eduardo",
     "license": "ISC",
