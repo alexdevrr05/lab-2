@@ -101,8 +101,8 @@ const addProductRenderer = async () => {
     cantidad: cantidad.value,
     volumen: volumen.value,
     unidad: unidad.value,
-    // imagen: imagen.value,
-    imagen: 'example.png',
+    imagen: imagen.value,
+    // imagen: 'example.png',
   };
 
   await window.electronAPI.addMaterial(objMaterial);

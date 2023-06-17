@@ -1,7 +1,9 @@
 const { app, BrowserWindow, ipcMain, Notification } = require('electron');
 const path = require('path');
-let db = require('./bd/conexiondb');
+let db = require('./db/conexiondb');
 const { setMainMenu } = require('./js/menu/menu');
+const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
 
 let win;
 let winlogin;

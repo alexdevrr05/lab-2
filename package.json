@@ -12,6 +12,7 @@
     "dependencies": {
         "bootstrap": "^5.2.2",
         "electron": "^21.3.0",
-        "promise-mysql": "^5.2.0"
+        "promise-mysql": "^5.2.0",
+        "uuid": "^9.0.0"
     }
 }
