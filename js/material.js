@@ -1,74 +1,17 @@
-const { ipcRenderer } = require('electron')
-
-let mylista1;
-let idmaterial;
-let nombre;
-let cantidad;
-let volumen;
-let unidad;
-let imagen;
-let btnform;
-let btnUpdate;
-let btndelete;
-let btnedit;
-
-
-/*document.addEventListener("DOMContentLoaded", function() {
- 
-})*/
-
-
-
-window.onload = function() {
-    mylista1 = document.getElementById("mylista1")
-    idmaterial = document.getElementById("idmaterial")
-    nombre = document.getElementById("nombre")
-    cantidad = document.getElementById("cantidad")
-    volumen = document.getElementById("volumen")
-    unidad = document.getElementById("unidad")
-    imagen = document.getElementById("imagen")
-    btnform = document.getElementById("btnform")
-    btnUpdate = document.getElementById("btnUpdate")
-    btnform.onclick = renderAddProduct
-    btnUpdate.onclick = renderUpdateProduct
-    renderGetProducts()
-
-
-
-};
-
-
-async function renderGetProducts() {
-    await ipcRenderer.invoke('getMateriales')
-}
-
-
-async function renderAddProduct() {
-    const obj = {
-        nombre: nombre.value,
-        cantidad: parseInt(cantidad.value),
-        volumen: parseInt(volumen.value),
-        unidad: unidad.value,
-        imagen: imagen.value
-
+window.addEventListener('DOMContentLoaded', () => {
+  window.electronAPI.executeQuery('SELECT * FROM material', (error) => {
+    if (error) {
+      console.error('Error al ejecutar la consulta:', error);
     }
-    nombre.value = ""
-    cantidad.value = ""
-    volumen.value = ""
-    unidad.value = ""
-    imagen.value = ""
-    await ipcRenderer.invoke('add', obj)
-}
+  });
 
+  window.electronAPI.receiveQueryResult((event, data) => {
+    let mylista1 = document.getElementById('mylista1');
 
-
-ipcRenderer.on('products', (event, results) => {
-
-
-    let template = ""
-    const list = results
-    list.forEach(element => {
-        template += `
+    let template = '';
+    const list = data.results;
+    list.map((element) => {
+      template += `
          <tr>
             <td class="centrado">${element.nombre}</td>
             <td class="centrado">${element.cantidad}</td>
@@ -78,78 +21,127 @@ ipcRenderer.on('products', (event, results) => {
             <td class="centrado">
               <button class="btn btn-danger"
                 value="${element.id}"
-                > 
+                >
                 Eliminar
               </button>
              </td>
-             
+
              <td class="centrado">
-               <button class="btn btn-info"   
+               <button class="btn btn-info"
                  id="btnedit"
-                 value="${element.id}"> 
+                 value="${element.id}">
                 Editar
               </button>
-           
+
             </td>
          </tr>
-      `
+      `;
     });
 
-    mylista1.innerHTML = template
-    btndelete = document.querySelectorAll(".btn-danger")
-    btndelete.forEach(boton => {
-        boton.addEventListener("click", renderdeleteproduct)
-    })
+    mylista1.innerHTML = template;
+    //   btndelete = document.querySelectorAll('.btn-danger');
+    //   btndelete.forEach((boton) => {
+    //     boton.addEventListener('click', renderdeleteproduct);
+    //   });
 
-    btnedit = document.querySelectorAll(".btn-info")
-    btnedit.forEach(boton => {
-        boton.addEventListener("click", rendergetproduct)
-    })
-
+    //   btnedit = document.querySelectorAll('.btn-info');
+    //   btnedit.forEach((boton) => {
+    //     boton.addEventListener('click', rendergetproduct);
+    //   });
+  });
 });
 
+// const { ipcRenderer } = require('electron');
 
-async function renderdeleteproduct(e) {
+// let mylista1;
+// let idmaterial;
+// let nombre;
+// let cantidad;
+// let volumen;
+// let unidad;
+// let imagen;
+// let btnform;
+// let btnUpdate;
+// let btndelete;
+// let btnedit;
 
-    const obj = { id: parseInt(e.target.value) }
-    await ipcRenderer.invoke('remove_product', obj)
-}
+// /*document.addEventListener("DOMContentLoaded", function() {
 
-async function rendergetproduct(e) {
-    const obj = { id: parseInt(e.target.value) }
-    await ipcRenderer.invoke("get_one", obj)
+// })*/
 
-}
+// window.onload = function () {
+//   mylista1 = document.getElementById('mylista1');
+//   idmaterial = document.getElementById('idmaterial');
+//   nombre = document.getElementById('nombre');
+//   cantidad = document.getElementById('cantidad');
+//   volumen = document.getElementById('volumen');
+//   unidad = document.getElementById('unidad');
+//   imagen = document.getElementById('imagen');
+//   btnform = document.getElementById('btnform');
+//   btnUpdate = document.getElementById('btnUpdate');
+//   btnform.onclick = renderAddProduct;
+//   btnUpdate.onclick = renderUpdateProduct;
+//   renderGetProducts();
+// };
 
-ipcRenderer.on('product', (event, result) => {
-    idmaterial.value = result.id
-    nombre.value = result.nombre
-    cantidad.value = result.cantidad
-    volumen.value = result.volumen
-    unidad.value = result.unidad
-    imagen.value = result.imagen
-});
+// async function renderGetProducts() {
+//   await ipcRenderer.invoke('getMateriales');
+// }
 
-async function renderUpdateProduct() {
-    const obj = {
-        id: idmaterial.value,
-        nombre: nombre.value,
-        cantidad: cantidad.value,
-        volumen: volumen.value,
-        unidad: unidad.value,
-        imagen: imagen.value,
+// async function renderAddProduct() {
+//   const obj = {
+//     nombre: nombre.value,
+//     cantidad: parseInt(cantidad.value),
+//     volumen: parseInt(volumen.value),
+//     unidad: unidad.value,
+//     imagen: imagen.value,
+//   };
+//   nombre.value = '';
+//   cantidad.value = '';
+//   volumen.value = '';
+//   unidad.value = '';
+//   imagen.value = '';
+//   await ipcRenderer.invoke('add', obj);
+// }
 
-    }
+// async function renderdeleteproduct(e) {
+//   const obj = { id: parseInt(e.target.value) };
+//   await ipcRenderer.invoke('remove_product', obj);
+// }
 
-    clearinput()
-    await ipcRenderer.invoke("update", obj)
-}
+// async function rendergetproduct(e) {
+//   const obj = { id: parseInt(e.target.value) };
+//   await ipcRenderer.invoke('get_one', obj);
+// }
 
-function clearinput() {
-    idmaterial.value = ""
-    nombre.value = ""
-    cantidad.value = ""
-    volumen.value = ""
-    unidad.value = ""
-    imagen.value = ""
-}
+// ipcRenderer.on('product', (event, result) => {
+//   idmaterial.value = result.id;
+//   nombre.value = result.nombre;
+//   cantidad.value = result.cantidad;
+//   volumen.value = result.volumen;
+//   unidad.value = result.unidad;
+//   imagen.value = result.imagen;
+// });
+
+// async function renderUpdateProduct() {
+//   const obj = {
+//     id: idmaterial.value,
+//     nombre: nombre.value,
+//     cantidad: cantidad.value,
+//     volumen: volumen.value,
+//     unidad: unidad.value,
+//     imagen: imagen.value,
+//   };
+
+//   clearinput();
+//   await ipcRenderer.invoke('update', obj);
+// }
+
+// function clearinput() {
+//   idmaterial.value = '';
+//   nombre.value = '';
+//   cantidad.value = '';
+//   volumen.value = '';
+//   unidad.value = '';
+//   imagen.value = '';
+// }
