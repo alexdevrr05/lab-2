@@ -86,7 +86,7 @@ btnform.addEventListener('click', async () => {
   }
 });
 
-const addProductRenderer = () => {
+const addProductRenderer = async () => {
   const objMaterial = {
     nombre: nombre.value,
     cantidad: cantidad.value,
@@ -110,7 +110,7 @@ const addProductRenderer = () => {
       updateTable(data); // Actualizar la tabla con los nuevos datos
     }
   });
-}
+};
 
 const clearinput = () => {
   idmaterial.value = '';

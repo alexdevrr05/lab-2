@@ -75,6 +75,19 @@ ipcMain.on('add-reactivo', (event, reactivo) => {
   });
 });
 
+ipcMain.on('add-practica', (event, practica) => {
+  const query = `INSERT INTO practica (nomPract, fecPract) VALUES (?, ?)`;
+  const values = [practica.nombre, practica.fecha];
+
+  db.query(query, values, (error, result) => {
+    if (error) {
+      event.reply('add-practica-result', { error });
+    } else {
+      event.reply('add-practica-result', { result });
+    }
+  });
+});
+
 function createWindowpractica() {
   win = new BrowserWindow({
     width: 1400,

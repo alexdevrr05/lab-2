@@ -1,204 +1,100 @@
+let btnform = document.getElementById('btnform');
+let nombre = document.getElementById('nombre');
+let fecha = document.getElementById('fecha');
+
 window.addEventListener('DOMContentLoaded', () => {
-  window.electronAPI.executeQuery('SELECT * FROM practica', (error) => {
+  window.electronAPI.executeQuery('SELECT * FROM practica', (error, data) => {
     if (error) {
       console.error('Error al ejecutar la consulta:', error);
+    } else {
+      updateTable(data);
     }
   });
 
   window.electronAPI.receiveQueryResult((event, data) => {
-    let mylist = document.getElementById('mylist');
-    let template = '';
-    const list = results;
-    list.forEach((element) => {
-      template += `
-         <tr>
-            <td class="centrado">${element.nombre}</td>
-            <td class="centrado">${element.formula}</td>
-            <td class="centrado">${element.cantidad}</td>
-            <td class="centrado">${element.azul}</td>
-            <td class="centrado">${element.rojo}</td>
-            <td class="centrado">${element.amarillo}</td>
-            <td class="centrado">${element.blanco}</td>
-            <td class="centrado">
-              <button class="btn btn-danger"
-                value="${element.id}"
-                > 
-                Eliminar
-              </button>
-             </td>
-             
-             <td class="centrado">
-               <button class="btn btn-info"   
-                 id="btnedit"
-                 value="${element.id}"> 
-                Editar
-              </button>
-           
-            </td>
-         </tr>
-      `;
-    });
-    mylist.innerHTML = template;
+    updateTable(data);
   });
 });
 
-// const { ipcRenderer } = require('electron')
+const updateTable = (data) => {
+  let mylist = document.getElementById('mylist');
+  let template = '';
 
-// let mylist;
-// let idreactivo;
-// let nombre;
-// let formula;
-// let cantidad;
-// let azul;
-// let rojo;
-// let amarillo;
-// let blanco;
-// let btnform;
-// let btnUpdate;
-// let btndelete;
-// let btnedit;
+  const list = data.results;
+  list.forEach((element) => {
+    // Parsear la fecha
+    const fecha = new Date(element.fecPract);
 
-// /*document.addEventListener("DOMContentLoaded", function() {
+    // Obtener los componentes de la fecha
+    const year = fecha.getFullYear();
+    const month = fecha.getMonth() + 1; // Los meses en JavaScript van de 0 a 11
+    const day = fecha.getDate();
 
-// })*/
+    // Formatear la fecha en el formato deseado (por ejemplo, DD/MM/YYYY)
+    const formattedDate = `${day}/${month}/${year}`;
 
-// window.onload = function() {
-//     mylist = document.getElementById("mylist")
-//     idreactivo = document.getElementById("idreactivo")
-//     nombre = document.getElementById("nombre")
-//     formula = document.getElementById("formula")
-//     cantidad = document.getElementById("cantidad")
-//     azul = document.getElementById("azul")
-//     rojo = document.getElementById("rojo")
-//     amarillo = document.getElementById("amarillo")
-//     blanco = document.getElementById("blanco")
-//     btnform = document.getElementById("btnform")
-//     btnUpdate = document.getElementById("btnUpdate")
-//     btnform.onclick = renderAddProduct
-//     btnUpdate.onclick = renderUpdateProduct
-//     renderGetProducts()
+    template += `
+       <tr>
+          <td class="centrado">${element.nomPract}</td>
+          <td class="centrado">${formattedDate}</td>
+          <td class="centrado">
+            <button class="btn btn-danger" value="${element.id}">
+              Eliminar
+            </button>
+          </td>
+          <td class="centrado">
+            <button class="btn btn-info" id="btnedit" value="${element.id}">
+              Editar
+            </button>
+          </td>
+       </tr>
+    `;
+  });
+  mylist.innerHTML = template;
+};
 
-// };
+// Validar que los campos no vengan vacíos
+const isValidForm = () => {
+  const nombreValue = nombre.value.trim();
+  const fechaValue = fecha.value.trim();
 
-// //async function renderGetProducts() {
-// //    await ipcRenderer.invoke('get')
-// //}
+  if (nombreValue === '' || fechaValue === '') {
+    alert('Por favor, completa todos los campos');
+    return false;
+  }
 
-// async function renderAddProduct() {
-//     const obj = {
-//         nombre: nombre.value,
-//         formula: formula.value,
-//         cantidad: parseInt(cantidad.value),
-//         azul: parseInt(azul.value),
-//         rojo: parseInt(rojo.value),
-//         amarillo: parseInt(amarillo.value),
-//         blanco: blanco.value
+  return true;
+};
 
-//     }
-//     nombre.value = ""
-//     formula.value = ""
-//     cantidad.value = ""
-//     azul.value = ""
-//     rojo.value = ""
-//     amarillo.value = ""
-//     blanco.value = ""
-//     await ipcRenderer.invoke('add', obj)
-// }
+btnform.addEventListener('click', async () => {
+  if (isValidForm()) {
+    addPracticaRenderer();
+  }
+});
 
-// ipcRenderer.on('products', (event, results) => {
+const addPracticaRenderer = async () => {
+  const objPractica = {
+    nombre: nombre.value,
+    fecha: fecha.value,
+  };
 
-//     let template = ""
-//     const list = results
-//     list.forEach(element => {
-//         template += `
-//          <tr>
-//             <td class="centrado">${element.nombre}</td>
-//             <td class="centrado">${element.formula}</td>
-//             <td class="centrado">${element.cantidad}</td>
-//             <td class="centrado">${element.azul}</td>
-//             <td class="centrado">${element.rojo}</td>
-//             <td class="centrado">${element.amarillo}</td>
-//             <td class="centrado">${element.blanco}</td>
-//             <td class="centrado">
-//               <button class="btn btn-danger"
-//                 value="${element.id}"
-//                 >
-//                 Eliminar
-//               </button>
-//              </td>
+  const result = await window.electronAPI.addPractica(objPractica);
+  console.log('Práctica agregada correctamente:', result);
 
-//              <td class="centrado">
-//                <button class="btn btn-info"
-//                  id="btnedit"
-//                  value="${element.id}">
-//                 Editar
-//               </button>
+  // Limpiar todos los campos
+  clearInput();
 
-//             </td>
-//          </tr>
-//       `
-//     });
+  // Petición a MySQL para obtener los datos actualizados
+  window.electronAPI.executeQuery('SELECT * FROM practica', (error, data) => {
+    if (error) {
+      console.error('Error al ejecutar la consulta:', error);
+    } else {
+      updateTable(data); // Actualizar la tabla con los nuevos datos
+    }
+  });
+};
 
-//     mylist.innerHTML = template
-//     btndelete = document.querySelectorAll(".btn-danger")
-//     btndelete.forEach(boton => {
-//         boton.addEventListener("click", renderdeleteproduct)
-//     })
-
-//     btnedit = document.querySelectorAll(".btn-info")
-//     btnedit.forEach(boton => {
-//         boton.addEventListener("click", rendergetproduct)
-//     })
-
-// });
-
-// async function renderdeleteproduct(e) {
-
-//     const obj = { id: parseInt(e.target.value) }
-//     await ipcRenderer.invoke('remove_product', obj)
-// }
-
-// async function rendergetproduct(e) {
-//     const obj = { id: parseInt(e.target.value) }
-//     await ipcRenderer.invoke("get_one", obj)
-
-// }
-
-// ipcRenderer.on('product', (event, result) => {
-//     idreactivo.value = result.id
-//     nombre.value = result.nombre
-//     formula.value = result.formula
-//     cantidad.value = result.cantidad
-//     azul.value = result.azul
-//     rojo.value = result.rojo
-//     amarillo.value = result.amarillo
-//     blanco.value = result.blanco
-// });
-
-// async function renderUpdateProduct() {
-//     const obj = {
-//         id: idreactivo.value,
-//         nombre: nombre.value,
-//         formula: formula.value,
-//         cantidad: cantidad.value,
-//         azul: azul.value,
-//         rojo: rojo.value,
-//         amarillo: amarillo.value,
-//         blanco: blanco.value,
-
-//     }
-
-//     clearinput()
-//     await ipcRenderer.invoke("update", obj)
-// }
-
-// function clearinput() {
-//     idreactivo.value = ""
-//     nombre.value = ""
-//     formula.value = ""
-//     cantidad.value = ""
-//     azul.value = ""
-//     rojo.value = ""
-//     amarillo.value = ""
-//     blanco.value = ""
-// }
+const clearInput = () => {
+  nombre.value = '';
+  fecha.value = '';
+};

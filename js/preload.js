@@ -31,4 +31,16 @@ contextBridge.exposeInMainWorld('electronAPI', {
       });
     });
   },
+  addPractica: (practica) => {
+    return new Promise((resolve, reject) => {
+      ipcRenderer.send('add-practica', practica);
+      ipcRenderer.once('add-practica-result', (event, response) => {
+        if (response.error) {
+          reject(response.error);
+        } else {
+          resolve(response.result);
+        }
+      });
+    });
+  },
 });
