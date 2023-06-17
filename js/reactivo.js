@@ -10,10 +10,19 @@ let amarillo = document.getElementById('amarillo');
 let blanco = document.getElementById('blanco');
 let btnform = document.getElementById('btnform');
 let btnUpdate = document.getElementById('btnUpdate');
+let subtitle = document.getElementById('subtitle');
 
 window.addEventListener('DOMContentLoaded', () => {
   const updateTable = (data) => {
     let mylist = document.getElementById('mylist');
+
+    subtitle.textContent = '';
+
+    if (data.results.length === 0) {
+      subtitle.textContent = 'Comienza creando una práctica';
+      tablePracticas.style.display = 'none';
+    }
+
     let template = '';
     const list = data.results;
     list.forEach((element) => {
@@ -38,16 +47,19 @@ window.addEventListener('DOMContentLoaded', () => {
             </td>
          </tr>
       `;
-      mylist.innerHTML = template;
-
-      const deleteButton = document.querySelector(
-        `button[value="${element.id}"]`
-      );
-      deleteButton.addEventListener('click', () => {
-        const reactivoId = deleteButton.value;
-        deleteReactivo(reactivoId);
-      });
     });
+
+    mylist.innerHTML = template;
+
+    const deleteButtons = document.querySelectorAll('.btn.btn-danger');
+    deleteButtons.forEach((button) => {
+      button.addEventListener('click', handleDelete);
+    });
+  };
+
+  const handleDelete = (event) => {
+    const practicaId = event.target.value;
+    deleteReactivo(practicaId);
   };
 
   window.electronAPI.executeQuery('SELECT * FROM reactivos', (error, data) => {

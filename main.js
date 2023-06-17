@@ -114,20 +114,18 @@ ipcMain.on('add-practica', (event, practica) => {
   });
 });
 
-function createWindowpractica() {
-  win = new BrowserWindow({
-    width: 1400,
-    height: 800,
-    webPreferences: {
-      // nodeIntegration: true,
-      // contextIsolation:true,
-      // devTools:false,
-      preload: path.join(__dirname, './js/practica.js'),
-    },
-  });
+ipcMain.on('delete-practica', (event, practicaId) => {
+  const query = `DELETE FROM practica WHERE idPract = ?`;
+  const values = [practicaId];
 
-  win.loadFile('./html/practica.html');
-}
+  db.query(query, values, (error, result) => {
+    if (error) {
+      event.reply('delete-practica-result', { error });
+    } else {
+      event.reply('delete-practica-result', { result });
+    }
+  });
+});
 
 function loginWindow() {
   winlogin = new BrowserWindow({

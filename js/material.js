@@ -6,6 +6,7 @@ let unidad = document.getElementById('unidad');
 let imagen = document.getElementById('imagen');
 let btnform = document.getElementById('btnform');
 let btnUpdate = document.getElementById('btnUpdate');
+const form = document.getElementById('material-form');
 
 window.addEventListener('DOMContentLoaded', () => {
   // Función para obtener y mostrar resultados
@@ -35,15 +36,12 @@ window.addEventListener('DOMContentLoaded', () => {
       `;
 
       mylista1.innerHTML = template;
+    });
 
-      // Dentro del bucle forEach para agregar el evento click al botón de eliminar
-      const deleteButton = document.querySelector(
-        `button[value="${element.id}"]`
-      );
-      deleteButton.addEventListener('click', () => {
-        const materialId = deleteButton.value;
-        deleteMaterial(materialId);
-      });
+    // Agregar evento click a los botones de eliminar
+    const deleteButtons = document.querySelectorAll('.btn.btn-danger');
+    deleteButtons.forEach((button) => {
+      button.addEventListener('click', handleDelete);
     });
   };
 
@@ -90,7 +88,8 @@ const isValidForm = () => {
   return true;
 };
 
-btnform.addEventListener('click', async () => {
+btnform.addEventListener('click', async (e) => {
+  e.preventDefault(); // Evitar el evento por defecto del botón
   if (isValidForm()) {
     addProductRenderer();
   }
@@ -107,8 +106,6 @@ const addProductRenderer = async () => {
   };
 
   await window.electronAPI.addMaterial(objMaterial);
-  // const result = await window.electronAPI.addMaterial(objMaterial);
-  // console.log('Material agregado correctamente:', result);
 
   // Limpiar todos los campos
   clearinput();
@@ -132,10 +129,9 @@ const clearinput = () => {
   imagen.value = '';
 };
 
-const deleteMaterial = async (materialId) => {
+const handleDelete = async (event) => {
+  const materialId = event.target.value;
   await window.electronAPI.deleteMaterial(materialId);
-  // const result = await window.electronAPI.deleteMaterial(materialId);
-  // console.log('Material eliminado correctamente:', result);
 
   // Petición a MySQL para obtener los datos actualizados
   window.electronAPI.executeQuery('SELECT * FROM material', (error, data) => {
