@@ -54,6 +54,27 @@ ipcMain.on('add-material', (event, material) => {
   });
 });
 
+ipcMain.on('add-reactivo', (event, reactivo) => {
+  const query = `INSERT INTO reactivos (nombre, formula, cantidad, azul, rojo, amarillo, blanco) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+  const values = [
+    reactivo.nombre,
+    reactivo.formula,
+    reactivo.cantidad,
+    reactivo.azul,
+    reactivo.rojo,
+    reactivo.amarillo,
+    reactivo.blanco,
+  ];
+
+  db.query(query, values, (error, result) => {
+    if (error) {
+      event.reply('add-reactivo-result', { error });
+    } else {
+      event.reply('add-reactivo-result', { result });
+    }
+  });
+});
+
 function createWindowpractica() {
   win = new BrowserWindow({
     width: 1400,

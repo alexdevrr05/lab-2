@@ -19,4 +19,16 @@ contextBridge.exposeInMainWorld('electronAPI', {
       });
     });
   },
+  addReactivo: (reactivo) => {
+    return new Promise((resolve, reject) => {
+      ipcRenderer.send('add-reactivo', reactivo);
+      ipcRenderer.once('add-reactivo-result', (event, response) => {
+        if (response.error) {
+          reject(response.error);
+        } else {
+          resolve(response.result);
+        }
+      });
+    });
+  },
 });
