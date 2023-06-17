@@ -8,20 +8,12 @@ let btnform = document.getElementById('btnform');
 let btnUpdate = document.getElementById('btnUpdate');
 
 window.addEventListener('DOMContentLoaded', () => {
-  // petición a mysql
-  window.electronAPI.executeQuery('SELECT * FROM material', (error) => {
-    if (error) {
-      console.error('Error al ejecutar la consulta:', error);
-    }
-  });
-
-  // obtener y mostrar resultados
-  window.electronAPI.receiveQueryResult((event, data) => {
+  // Función para obtener y mostrar resultados
+  const updateTable = (data) => {
     let mylista1 = document.getElementById('mylista1');
-
     let template = '';
     const list = data.results;
-    list.map((element) => {
+    list.forEach((element) => {
       template += `
          <tr>
             <td class="centrado">${element.nombre}</td>
@@ -30,35 +22,39 @@ window.addEventListener('DOMContentLoaded', () => {
             <td class="centrado">${element.unidad}</td>
             <td class="centrado">${element.imagen}</td>
             <td class="centrado">
-              <button class="btn btn-danger"
-                value="${element.id}"
-                >
+              <button class="btn btn-danger" value="${element.id}">
                 Eliminar
               </button>
              </td>
-
              <td class="centrado">
-               <button class="btn btn-info"
-                 id="btnedit"
-                 value="${element.id}">
+               <button class="btn btn-info" id="btnedit" value="${element.id}">
                 Editar
               </button>
-
             </td>
          </tr>
       `;
     });
-
     mylista1.innerHTML = template;
-    //   btndelete = document.querySelectorAll('.btn-danger');
-    //   btndelete.forEach((boton) => {
-    //     boton.addEventListener('click', renderdeleteproduct);
-    //   });
+  };
 
-    //   btnedit = document.querySelectorAll('.btn-info');
-    //   btnedit.forEach((boton) => {
-    //     boton.addEventListener('click', rendergetproduct);
-    //   });
+  /**
+   * se realiza una consulta durante la carga inicial
+   * del documento y se actualiza la tabla con los resultados.
+   *  No se realizan dos consultas separadas durante la carga del documento.
+   */
+
+  // Petición inicial a MySQL para obtener los datos
+  window.electronAPI.executeQuery('SELECT * FROM material', (error, data) => {
+    if (error) {
+      console.error('Error al ejecutar la consulta:', error);
+    } else {
+      updateTable(data); // Mostrar los resultados iniciales
+    }
+  });
+
+  // Escuchar el evento 'query-result' para actualizar la tabla con nuevos datos
+  window.electronAPI.receiveQueryResult((event, data) => {
+    updateTable(data);
   });
 });
 
@@ -95,10 +91,9 @@ async function renderAddProduct() {
     nombre: nombre.value,
     cantidad: cantidad.value,
     volumen: volumen.value,
-    // cantidad: parseInt(cantidad.value) | 0,
-    // volumen: parseInt(volumen.value) | 0,
     unidad: unidad.value,
-    imagen: imagen.value,
+    // imagen: imagen.value,
+    imagen: 'example.png',
   };
 
   const result = await window.electronAPI.addMaterial(objMaterial);
@@ -106,6 +101,15 @@ async function renderAddProduct() {
 
   // Limpiar todos los campos
   clearinput();
+
+  // Petición a MySQL para obtener los datos actualizados
+  window.electronAPI.executeQuery('SELECT * FROM material', (error, data) => {
+    if (error) {
+      console.error('Error al ejecutar la consulta:', error);
+    } else {
+      updateTable(data); // Actualizar la tabla con los nuevos datos
+    }
+  });
 }
 
 const clearinput = () => {
@@ -135,17 +139,3 @@ const clearinput = () => {
 //   unidad.value = result.unidad;
 //   imagen.value = result.imagen;
 // });
-
-// async function renderUpdateProduct() {
-//   const obj = {
-//     id: idmaterial.value,
-//     nombre: nombre.value,
-//     cantidad: cantidad.value,
-//     volumen: volumen.value,
-//     unidad: unidad.value,
-//     imagen: imagen.value,
-//   };
-
-//   clearinput();
-//   await ipcRenderer.invoke('update', obj);
-// }
