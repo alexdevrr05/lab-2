@@ -1,10 +1,21 @@
+let idmaterial = document.getElementById('idmaterial');
+let nombre = document.getElementById('nombre');
+let cantidad = document.getElementById('cantidad');
+let volumen = document.getElementById('volumen');
+let unidad = document.getElementById('unidad');
+let imagen = document.getElementById('imagen');
+let btnform = document.getElementById('btnform');
+let btnUpdate = document.getElementById('btnUpdate');
+
 window.addEventListener('DOMContentLoaded', () => {
+  // petición a mysql
   window.electronAPI.executeQuery('SELECT * FROM material', (error) => {
     if (error) {
       console.error('Error al ejecutar la consulta:', error);
     }
   });
 
+  // obtener y mostrar resultados
   window.electronAPI.receiveQueryResult((event, data) => {
     let mylista1 = document.getElementById('mylista1');
 
@@ -51,58 +62,60 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// const { ipcRenderer } = require('electron');
+// Validar que los campos no vengan vacíos
+const isValidForm = () => {
+  const nombreValue = nombre.value.trim();
+  const cantidadValue = cantidad.value.trim();
+  const volumenValue = volumen.value.trim();
+  const unidadValue = unidad.value.trim();
+  const imagenValue = imagen.value.trim();
 
-// let mylista1;
-// let idmaterial;
-// let nombre;
-// let cantidad;
-// let volumen;
-// let unidad;
-// let imagen;
-// let btnform;
-// let btnUpdate;
-// let btndelete;
-// let btnedit;
+  if (
+    nombreValue === '' ||
+    cantidadValue === '' ||
+    volumenValue === '' ||
+    unidadValue === '' ||
+    imagenValue === ''
+  ) {
+    alert('Por favor, completa todos los campos');
+    return false;
+  }
 
-// /*document.addEventListener("DOMContentLoaded", function() {
+  return true;
+};
 
-// })*/
+btnform.addEventListener('click', async () => {
+  if (isValidForm()) {
+    renderAddProduct();
+  }
+});
 
-// window.onload = function () {
-//   mylista1 = document.getElementById('mylista1');
-//   idmaterial = document.getElementById('idmaterial');
-//   nombre = document.getElementById('nombre');
-//   cantidad = document.getElementById('cantidad');
-//   volumen = document.getElementById('volumen');
-//   unidad = document.getElementById('unidad');
-//   imagen = document.getElementById('imagen');
-//   btnform = document.getElementById('btnform');
-//   btnUpdate = document.getElementById('btnUpdate');
-//   btnform.onclick = renderAddProduct;
-//   btnUpdate.onclick = renderUpdateProduct;
-//   renderGetProducts();
-// };
+async function renderAddProduct() {
+  const objMaterial = {
+    nombre: nombre.value,
+    cantidad: cantidad.value,
+    volumen: volumen.value,
+    // cantidad: parseInt(cantidad.value) | 0,
+    // volumen: parseInt(volumen.value) | 0,
+    unidad: unidad.value,
+    imagen: imagen.value,
+  };
 
-// async function renderGetProducts() {
-//   await ipcRenderer.invoke('getMateriales');
-// }
+  const result = await window.electronAPI.addMaterial(objMaterial);
+  console.log('Material agregado correctamente:', result);
 
-// async function renderAddProduct() {
-//   const obj = {
-//     nombre: nombre.value,
-//     cantidad: parseInt(cantidad.value),
-//     volumen: parseInt(volumen.value),
-//     unidad: unidad.value,
-//     imagen: imagen.value,
-//   };
-//   nombre.value = '';
-//   cantidad.value = '';
-//   volumen.value = '';
-//   unidad.value = '';
-//   imagen.value = '';
-//   await ipcRenderer.invoke('add', obj);
-// }
+  // Limpiar todos los campos
+  clearinput();
+}
+
+const clearinput = () => {
+  idmaterial.value = '';
+  nombre.value = '';
+  cantidad.value = '';
+  volumen.value = '';
+  unidad.value = '';
+  imagen.value = '';
+};
 
 // async function renderdeleteproduct(e) {
 //   const obj = { id: parseInt(e.target.value) };
@@ -135,13 +148,4 @@ window.addEventListener('DOMContentLoaded', () => {
 
 //   clearinput();
 //   await ipcRenderer.invoke('update', obj);
-// }
-
-// function clearinput() {
-//   idmaterial.value = '';
-//   nombre.value = '';
-//   cantidad.value = '';
-//   volumen.value = '';
-//   unidad.value = '';
-//   imagen.value = '';
 // }

@@ -35,6 +35,25 @@ ipcMain.on('execute-query', (event, query) => {
   });
 });
 
+ipcMain.on('add-material', (event, material) => {
+  const query = `INSERT INTO material (nombre, cantidad, volumen, unidad, imagen) VALUES (?, ?, ?, ?, ?)`;
+  const values = [
+    material.nombre,
+    material.cantidad,
+    material.volumen,
+    material.unidad,
+    material.imagen,
+  ];
+
+  db.query(query, values, (error, result) => {
+    if (error) {
+      event.reply('add-material-result', { error });
+    } else {
+      event.reply('add-material-result', { result });
+    }
+  });
+});
+
 function createWindowpractica() {
   win = new BrowserWindow({
     width: 1400,
@@ -245,8 +264,4 @@ function updateproduct(obj) {
       getProducts();
     }
   );
-}
-
-function getMaterials() {
-  return executeQuery('SELECT * FROM material');
 }
