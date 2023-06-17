@@ -82,11 +82,11 @@ const isValidForm = () => {
 
 btnform.addEventListener('click', async () => {
   if (isValidForm()) {
-    renderAddProduct();
+    addProductRenderer();
   }
 });
 
-async function renderAddProduct() {
+async function addProductRenderer() {
   const objMaterial = {
     nombre: nombre.value,
     cantidad: cantidad.value,
