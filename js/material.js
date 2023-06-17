@@ -86,7 +86,7 @@ btnform.addEventListener('click', async () => {
   }
 });
 
-async function addProductRenderer() {
+const addProductRenderer = () => {
   const objMaterial = {
     nombre: nombre.value,
     cantidad: cantidad.value,
