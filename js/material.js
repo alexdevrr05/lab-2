@@ -33,8 +33,18 @@ window.addEventListener('DOMContentLoaded', () => {
             </td>
          </tr>
       `;
+
+      mylista1.innerHTML = template;
+
+      // Dentro del bucle forEach para agregar el evento click al botón de eliminar
+      const deleteButton = document.querySelector(
+        `button[value="${element.id}"]`
+      );
+      deleteButton.addEventListener('click', () => {
+        const materialId = deleteButton.value;
+        deleteMaterial(materialId);
+      });
     });
-    mylista1.innerHTML = template;
   };
 
   /**
@@ -96,8 +106,9 @@ const addProductRenderer = async () => {
     imagen: 'example.png',
   };
 
-  const result = await window.electronAPI.addMaterial(objMaterial);
-  console.log('Material agregado correctamente:', result);
+  await window.electronAPI.addMaterial(objMaterial);
+  // const result = await window.electronAPI.addMaterial(objMaterial);
+  // console.log('Material agregado correctamente:', result);
 
   // Limpiar todos los campos
   clearinput();
@@ -121,21 +132,17 @@ const clearinput = () => {
   imagen.value = '';
 };
 
-// async function renderdeleteproduct(e) {
-//   const obj = { id: parseInt(e.target.value) };
-//   await ipcRenderer.invoke('remove_product', obj);
-// }
+const deleteMaterial = async (materialId) => {
+  await window.electronAPI.deleteMaterial(materialId);
+  // const result = await window.electronAPI.deleteMaterial(materialId);
+  // console.log('Material eliminado correctamente:', result);
 
-// async function rendergetproduct(e) {
-//   const obj = { id: parseInt(e.target.value) };
-//   await ipcRenderer.invoke('get_one', obj);
-// }
-
-// ipcRenderer.on('product', (event, result) => {
-//   idmaterial.value = result.id;
-//   nombre.value = result.nombre;
-//   cantidad.value = result.cantidad;
-//   volumen.value = result.volumen;
-//   unidad.value = result.unidad;
-//   imagen.value = result.imagen;
-// });
+  // Petición a MySQL para obtener los datos actualizados
+  window.electronAPI.executeQuery('SELECT * FROM material', (error, data) => {
+    if (error) {
+      console.error('Error al ejecutar la consulta:', error);
+    } else {
+      updateTable(data); // Actualizar la tabla con los nuevos datos
+    }
+  });
+};

@@ -1,5 +1,6 @@
 let mylist = document.getElementById('mylist');
 let idreactivo = document.getElementById('idreactivo');
+let clasificacion = document.getElementById('clasificacion');
 let nombre = document.getElementById('nombre');
 let formula = document.getElementById('formula');
 let cantidad = document.getElementById('cantidad');
@@ -37,8 +38,16 @@ window.addEventListener('DOMContentLoaded', () => {
             </td>
          </tr>
       `;
+      mylist.innerHTML = template;
+
+      const deleteButton = document.querySelector(
+        `button[value="${element.id}"]`
+      );
+      deleteButton.addEventListener('click', () => {
+        const reactivoId = deleteButton.value;
+        deleteReactivo(reactivoId);
+      });
     });
-    mylist.innerHTML = template;
   };
 
   window.electronAPI.executeQuery('SELECT * FROM reactivos', (error, data) => {
@@ -85,7 +94,7 @@ btnform.addEventListener('click', async () => {
   }
 });
 
-const addProductRenderer = () => {
+const addProductRenderer = async () => {
   const objReactivo = {
     nombre: nombre.value,
     formula: formula.value,
@@ -95,9 +104,9 @@ const addProductRenderer = () => {
     amarillo: parseInt(amarillo.value),
     blanco: blanco.value,
   };
-  console.log('objReactivo ->', objReactivo);
+  // console.log('objReactivo ->', objReactivo);
 
-  const result = window.electronAPI.addReactivo(objReactivo);
+  const result = await window.electronAPI.addReactivo(objReactivo);
   console.log('Reactivo agregado correctamente:', result);
 
   clearInput();
@@ -112,6 +121,7 @@ const addProductRenderer = () => {
 };
 
 const clearInput = () => {
+  clasificacion.value = '';
   idreactivo.value = '';
   nombre.value = '';
   formula.value = '';
@@ -120,4 +130,19 @@ const clearInput = () => {
   rojo.value = '';
   amarillo.value = '';
   blanco.value = '';
+};
+
+const deleteReactivo = async (reactivoId) => {
+  await window.electronAPI.deleteReactivo(reactivoId);
+  // const result = await window.electronAPI.deleteReactivo(reactivoId);
+  // console.log('Reactivo eliminado correctamente:', result);
+
+  // Petición a MySQL para obtener los datos actualizados
+  window.electronAPI.executeQuery('SELECT * FROM reactivos', (error, data) => {
+    if (error) {
+      console.error('Error al ejecutar la consulta:', error);
+    } else {
+      updateTable(data); // Actualizar la tabla con los nuevos datos
+    }
+  });
 };

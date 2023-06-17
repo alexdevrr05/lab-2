@@ -54,6 +54,19 @@ ipcMain.on('add-material', (event, material) => {
   });
 });
 
+ipcMain.on('delete-material', (event, materialId) => {
+  const query = `DELETE FROM material WHERE id = ?`;
+  const values = [materialId];
+
+  db.query(query, values, (error, result) => {
+    if (error) {
+      event.reply('delete-material-result', { error });
+    } else {
+      event.reply('delete-material-result', { result });
+    }
+  });
+});
+
 ipcMain.on('add-reactivo', (event, reactivo) => {
   const query = `INSERT INTO reactivos (nombre, formula, cantidad, azul, rojo, amarillo, blanco) VALUES (?, ?, ?, ?, ?, ?, ?)`;
   const values = [
@@ -71,6 +84,19 @@ ipcMain.on('add-reactivo', (event, reactivo) => {
       event.reply('add-reactivo-result', { error });
     } else {
       event.reply('add-reactivo-result', { result });
+    }
+  });
+});
+
+ipcMain.on('delete-reactivo', (event, reactivoId) => {
+  const query = `DELETE FROM reactivos WHERE id = ?`;
+  const values = [reactivoId];
+
+  db.query(query, values, (error, result) => {
+    if (error) {
+      event.reply('delete-reactivo-result', { error });
+    } else {
+      event.reply('delete-reactivo-result', { result });
     }
   });
 });

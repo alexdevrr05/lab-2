@@ -19,10 +19,34 @@ contextBridge.exposeInMainWorld('electronAPI', {
       });
     });
   },
+  deleteMaterial: (materialId) => {
+    return new Promise((resolve, reject) => {
+      ipcRenderer.send('delete-material', materialId);
+      ipcRenderer.once('delete-material-result', (event, response) => {
+        if (response.error) {
+          reject(response.error);
+        } else {
+          resolve(response.result);
+        }
+      });
+    });
+  },
   addReactivo: (reactivo) => {
     return new Promise((resolve, reject) => {
       ipcRenderer.send('add-reactivo', reactivo);
       ipcRenderer.once('add-reactivo-result', (event, response) => {
+        if (response.error) {
+          reject(response.error);
+        } else {
+          resolve(response.result);
+        }
+      });
+    });
+  },
+  deleteReactivo: (reactivoId) => {
+    return new Promise((resolve, reject) => {
+      ipcRenderer.send('delete-reactivo', reactivoId);
+      ipcRenderer.once('delete-reactivo-result', (event, response) => {
         if (response.error) {
           reject(response.error);
         } else {
