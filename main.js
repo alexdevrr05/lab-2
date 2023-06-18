@@ -1,9 +1,10 @@
+// archivo main.js
 const { app, BrowserWindow, ipcMain, Notification } = require('electron');
 const path = require('path');
 let db = require('./db/conexiondb');
 const { setMainMenu } = require('./js/menu/menu');
 const fs = require('fs');
-const { v4: uuidv4 } = require('uuid');
+const { Blob } = require('buffer');
 
 let win;
 let winlogin;
@@ -39,20 +40,30 @@ ipcMain.on('execute-query', (event, query) => {
 
 ipcMain.on('add-material', (event, material) => {
   const query = `INSERT INTO material (nombre, cantidad, volumen, unidad, imagen) VALUES (?, ?, ?, ?, ?)`;
-  const values = [
-    material.nombre,
-    material.cantidad,
-    material.volumen,
-    material.unidad,
-    material.imagen,
-  ];
+  const imagePath = material.imagen; // Ruta de la imagen en el sistema de archivos
 
-  db.query(query, values, (error, result) => {
+  // Leer el archivo de imagen como un Buffer
+  fs.readFile(imagePath, (error, imageBuffer) => {
     if (error) {
       event.reply('add-material-result', { error });
-    } else {
-      event.reply('add-material-result', { result });
+      return;
     }
+
+    const values = [
+      material.nombre,
+      material.cantidad,
+      material.volumen,
+      material.unidad,
+      imageBuffer,
+    ];
+
+    db.query(query, values, (error, result) => {
+      if (error) {
+        event.reply('add-material-result', { error });
+      } else {
+        event.reply('add-material-result', { result });
+      }
+    });
   });
 });
 

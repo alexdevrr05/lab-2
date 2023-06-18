@@ -1,3 +1,4 @@
+// archivo material.js
 let idmaterial = document.getElementById('idmaterial');
 let nombre = document.getElementById('nombre');
 let cantidad = document.getElementById('cantidad');
@@ -7,21 +8,35 @@ let imagen = document.getElementById('imagen');
 let btnform = document.getElementById('btnform');
 let btnUpdate = document.getElementById('btnUpdate');
 const form = document.getElementById('material-form');
+let subtitle = document.getElementById('subtitle');
+let tableMateriales = document.getElementById('tableMateriales');
 
 window.addEventListener('DOMContentLoaded', () => {
   // Función para obtener y mostrar resultados
   const updateTable = (data) => {
     let mylista1 = document.getElementById('mylista1');
+    subtitle.textContent = '';
+
+    if (data.results.length === 0) {
+      subtitle.textContent = 'Comienza agregando materiales';
+      tableMateriales.style.display = 'none';
+    }
+
     let template = '';
     const list = data.results;
     list.forEach((element) => {
+      const imageBlob = new Blob([element.imagen], { type: 'image/jpeg' });
+      const imageUrl = URL.createObjectURL(imageBlob);
+
       template += `
          <tr>
             <td class="centrado">${element.nombre}</td>
             <td class="centrado">${element.cantidad}</td>
             <td class="centrado">${element.volumen}</td>
             <td class="centrado">${element.unidad}</td>
-            <td class="centrado">${element.imagen}</td>
+            <td class="centrado">
+              <img src="${imageUrl}" alt="Imagen" width="100">
+            </td>
             <td class="centrado">
               <button class="btn btn-danger" value="${element.id}">
                 Eliminar
@@ -72,14 +87,13 @@ const isValidForm = () => {
   const cantidadValue = cantidad.value.trim();
   const volumenValue = volumen.value.trim();
   const unidadValue = unidad.value.trim();
-  const imagenValue = imagen.value.trim();
 
   if (
     nombreValue === '' ||
     cantidadValue === '' ||
     volumenValue === '' ||
-    unidadValue === '' ||
-    imagenValue === ''
+    unidadValue === ''
+    // imagenValue === ''
   ) {
     alert('Por favor, completa todos los campos');
     return false;
@@ -96,13 +110,16 @@ btnform.addEventListener('click', async (e) => {
 });
 
 const addProductRenderer = async () => {
+  const imagenFile = imagen.files[0];
+  const imagenPath = imagenFile.path;
+
   const objMaterial = {
     nombre: nombre.value,
     cantidad: cantidad.value,
     volumen: volumen.value,
     unidad: unidad.value,
-    imagen: imagen.value,
-    // imagen: 'example.png',
+    // imagen: imagen.value,
+    imagen: imagenPath,
   };
 
   await window.electronAPI.addMaterial(objMaterial);
@@ -126,7 +143,7 @@ const clearinput = () => {
   cantidad.value = '';
   volumen.value = '';
   unidad.value = '';
-  imagen.value = '';
+  // imagen.value = '';
 };
 
 const handleDelete = async (event) => {
