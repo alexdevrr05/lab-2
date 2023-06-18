@@ -1,3 +1,5 @@
+// este es el archivo material.js
+
 let idmaterial = document.getElementById('idmaterial');
 let nombre = document.getElementById('nombre');
 let cantidad = document.getElementById('cantidad');
@@ -7,12 +9,20 @@ let imagen = document.getElementById('imagen');
 let btnform = document.getElementById('btnform');
 let btnUpdate = document.getElementById('btnUpdate');
 const form = document.getElementById('material-form');
+let subtitle = document.getElementById('subtitle');
 
 window.addEventListener('DOMContentLoaded', () => {
-  // Función para obtener y mostrar resultados
   const updateTable = (data) => {
     let mylista1 = document.getElementById('mylista1');
     let template = '';
+    subtitle.textContent = '';
+    tableMateriales.style.display = '';
+
+    if (data.results.length === 0) {
+      subtitle.textContent = 'Comienza agregando materiales';
+      tableMateriales.style.display = 'none';
+    }
+
     const list = data.results;
     list.forEach((element) => {
       template += `
@@ -21,7 +31,10 @@ window.addEventListener('DOMContentLoaded', () => {
             <td class="centrado">${element.cantidad}</td>
             <td class="centrado">${element.volumen}</td>
             <td class="centrado">${element.unidad}</td>
-            <td class="centrado">${element.imagen}</td>
+            <td class="centrado">
+              <img src="../uploads/${element.imagen}" alt="Imagen" width="100">
+            </td>
+
             <td class="centrado">
               <button class="btn btn-danger" value="${element.id}">
                 Eliminar
@@ -101,8 +114,7 @@ const addProductRenderer = async () => {
     cantidad: cantidad.value,
     volumen: volumen.value,
     unidad: unidad.value,
-    imagen: imagen.value,
-    // imagen: 'example.png',
+    imagen: imagen.files[0].path,
   };
 
   await window.electronAPI.addMaterial(objMaterial);

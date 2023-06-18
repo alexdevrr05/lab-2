@@ -1,9 +1,11 @@
+// este es el archivo main.js
 const { app, BrowserWindow, ipcMain, Notification } = require('electron');
 const path = require('path');
 let db = require('./db/conexiondb');
 const { setMainMenu } = require('./js/menu/menu');
+
 const fs = require('fs');
-const { v4: uuidv4 } = require('uuid');
+const uploadPath = path.join(__dirname, 'uploads');
 
 let win;
 let winlogin;
@@ -38,20 +40,41 @@ ipcMain.on('execute-query', (event, query) => {
 });
 
 ipcMain.on('add-material', (event, material) => {
-  const query = `INSERT INTO material (nombre, cantidad, volumen, unidad, imagen) VALUES (?, ?, ?, ?, ?)`;
-  const values = [
-    material.nombre,
-    material.cantidad,
-    material.volumen,
-    material.unidad,
-    material.imagen,
-  ];
+  if (!fs.existsSync(uploadPath)) {
+    fs.mkdirSync(uploadPath, { recursive: true });
+  }
 
-  db.query(query, values, (error, result) => {
+  const query = `INSERT INTO material (nombre, cantidad, volumen, unidad, imagen) VALUES (?, ?, ?, ?, ?)`;
+
+  const imageData = fs.readFileSync(material.imagen, 'base64');
+  const imageExtension = path.extname(material.imagen);
+  const newImageName = `image_${Date.now()}${imageExtension}`;
+  const imagePath = path.join(uploadPath, newImageName);
+
+  // Eliminar el prefijo de la representación base64 de la imagen
+  const base64Data = imageData.replace(/^data:image\/\w+;base64,/, '');
+  // Convertir la imagen de base64 a un buffer
+  const imageBuffer = Buffer.from(base64Data, 'base64');
+
+  fs.writeFile(imagePath, imageBuffer, (error) => {
     if (error) {
-      event.reply('add-material-result', { error });
+      event.reply('add-material-result', { error: error.message });
     } else {
-      event.reply('add-material-result', { result });
+      const values = [
+        material.nombre,
+        material.cantidad,
+        material.volumen,
+        material.unidad,
+        newImageName,
+      ];
+
+      db.query(query, values, (error, result) => {
+        if (error) {
+          event.reply('add-material-result', { error: error.message });
+        } else {
+          event.reply('add-material-result', { result });
+        }
+      });
     }
   });
 });
