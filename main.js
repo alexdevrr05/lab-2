@@ -79,7 +79,7 @@ ipcMain.on('add-material', (event, material) => {
   });
 });
 
-ipcMain.on('delete-material', (event, materialId) => {
+ipcMain.on('delete-material', (event, { materialId, imageName }) => {
   const query = `DELETE FROM material WHERE id = ?`;
   const values = [materialId];
 
@@ -87,6 +87,14 @@ ipcMain.on('delete-material', (event, materialId) => {
     if (error) {
       event.reply('delete-material-result', { error });
     } else {
+      // Eliminar la imagen del directorio "uploads"
+      const imagePath = path.join(__dirname, 'uploads', imageName);
+      fs.unlink(imagePath, (error) => {
+        if (error) {
+          console.error('Error al eliminar la imagen:', error);
+        }
+      });
+
       event.reply('delete-material-result', { result });
     }
   });

@@ -36,7 +36,7 @@ window.addEventListener('DOMContentLoaded', () => {
             </td>
 
             <td class="centrado">
-              <button class="btn btn-danger" value="${element.id}">
+              <button class="btn btn-danger" value="${element.id}" data-imagen="${element.imagen}">
                 Eliminar
               </button>
              </td>
@@ -143,7 +143,8 @@ const clearinput = () => {
 
 const handleDelete = async (event) => {
   const materialId = event.target.value;
-  await window.electronAPI.deleteMaterial(materialId);
+  const imagenName = event.target.getAttribute('data-imagen');
+  await window.electronAPI.deleteMaterial(materialId, imagenName);
 
   // Petición a MySQL para obtener los datos actualizados
   window.electronAPI.executeQuery('SELECT * FROM material', (error, data) => {
