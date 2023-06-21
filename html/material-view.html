@@ -34,21 +34,54 @@
         </div>
     </nav>
 
-    <div class="contenedor">
-        <h2 class="pt-4" id="title"></h2>
-        <div class="contenedor-cards pt-5 pb-5" id="listado-materiales">
-            <!-- <div class="card">
-                <div class="card-container">
-                    <img src="../uploads/image_1687126354288.jpeg" alt="img-1" />
-                </div>
-                <div class="contenido-card">
-                    <p>Material</p>
-                </div>
-            </div>
-            -->
-    </div>
+    <div class="general">
+        <div class="form-container">
+            <form id="material-form">
+                <div class="mb-2">
+                    <label for="nombre" class="form-label">Nombre del material</label>
+                    <input type="text" class="form-control" id="nombre" placeholder="ej. vaso precipitado" autofocus>
 
-<script src="../js/material/material-view.js"></script>
+                </div>
+                <div class="mb-0">
+                    <label for="cantidad" class="form-label">Cantidad de material</label>
+                    <input type="text" class="form-control" id="cantidad" placeholder="ej. 10" autofocus>
+                </div>
+
+                <div class="my-4">
+                    <h3 class="text-white">Capacidad</h3>
+                    <div class="container-input-capacidad">
+                        <input type="number" class="form-control" id="volumen" placeholder="Volumen">
+                        <input type="text" class="form-control" id="unidad" placeholder="Unidades">
+                        <!-- <input type="file" class="form-control file-input" accept="image/*" placeholder="imagen" id="imagen"> -->
+                        <input type="file" class="form-control file-input" accept="image/*" id="imagen">
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button class="btn btn-primary" type="button" id="btnform">Guardar</button>
+                    <button class="btn btn-success" type="button" id="btnUpdate">Actualizar</button>
+                </div>
+
+            </form>
+        </div>
+
+
+        <div class="contenedor">
+            <h2 class="pt-4" id="title"></h2>
+            <div class="contenedor-cards pt-2 pb-5" id="listado-materiales">
+                <!-- <div class="card">
+                    <div class="card-container">
+                        <img src="../uploads/image_1687126354288.jpeg" alt="img-1" />
+                    </div>
+                    <div class="contenido-card">
+                        <p>Material</p>
+                    </div>
+                </div>
+            -->
+            </div>
+        </div>
+
+        <script src="../js/material/material-view.js"></script>
 </body>
 
 </html>
