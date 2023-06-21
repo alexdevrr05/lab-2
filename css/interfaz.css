@@ -79,11 +79,13 @@ p {
     bottom: 0;
     width: 100%;
     background-color: var(--blumine);
-    padding-left: 1rem;
+    /* padding-left: 1rem; */
+    padding: 0 1rem;
     color: white;
     height: 40px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 
 .card-container {
@@ -113,3 +115,15 @@ form {
     flex-direction: column;
     gap: .5rem;
 }
+
+.card .contenido-card .delete {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+  }
+  
+  .card .contenido-card:hover .delete {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }

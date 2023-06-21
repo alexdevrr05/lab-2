@@ -28,11 +28,18 @@ window.addEventListener('DOMContentLoaded', () => {
             
             <div class="contenido-card">
               <p>${material.nombre}</p>
+              <button class="btn btn-danger btn-sm delete" value="${material.id}" data-imagen="${material.imagen}">Eliminar</button>
             </div>
         </div>
         `;
 
       listadoMateriales.innerHTML = template;
+    });
+
+    // Agregar evento click a los botones de eliminar
+    const deleteButtons = document.querySelectorAll('.btn.btn-danger');
+    deleteButtons.forEach((button) => {
+      button.addEventListener('click', handleDelete);
     });
   };
 
@@ -109,4 +116,19 @@ const clearinput = () => {
   volumen.value = '';
   unidad.value = '';
   imagen.value = '';
+};
+
+const handleDelete = async (event) => {
+  const materialId = event.target.value;
+  const imagenName = event.target.getAttribute('data-imagen');
+  await window.electronAPI.deleteMaterial(materialId, imagenName);
+
+  // Petición a MySQL para obtener los datos actualizados
+  window.electronAPI.executeQuery('SELECT * FROM material', (error, data) => {
+    if (error) {
+      console.error('Error al ejecutar la consulta:', error);
+    } else {
+      updateTable(data); // Actualizar la tabla con los nuevos datos
+    }
+  });
 };
