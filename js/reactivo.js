@@ -17,13 +17,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
     subtitle.textContent = '';
 
-    if (data.results.length === 0) {
+    if (data.length === 0) {
       subtitle.textContent = 'Comienza creando una práctica';
       tablePracticas.style.display = 'none';
     }
 
     let template = '';
-    const list = data.results;
+    const list = data;
     list.forEach((element) => {
       template += `
          <tr>

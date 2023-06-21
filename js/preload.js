@@ -8,6 +8,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   executeQueries: (queries, callback) =>
     ipcRenderer.send('execute-queries', queries),
   receiveQueryResult: (callback) => ipcRenderer.on('query-result', callback),
+  receiveQueriesResults: (callback) =>
+    ipcRenderer.on('queries-results', callback),
   addMaterial: (material) => {
     return new Promise((resolve, reject) => {
       ipcRenderer.send('add-material', material);
@@ -72,6 +74,18 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return new Promise((resolve, reject) => {
       ipcRenderer.send('add-practica', practica);
       ipcRenderer.once('add-practica-result', (event, response) => {
+        if (response.error) {
+          reject(response.error);
+        } else {
+          resolve(response.result);
+        }
+      });
+    });
+  },
+  addPracticaMateriales: (practica) => {
+    return new Promise((resolve, reject) => {
+      ipcRenderer.send('add-practica-materiales', practica);
+      ipcRenderer.once('add-practica-result-materiales', (event, response) => {
         if (response.error) {
           reject(response.error);
         } else {

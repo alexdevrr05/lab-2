@@ -55,7 +55,7 @@ ipcMain.on('execute-queries', (event, queries) => {
       }
 
       if (completedQueries === queries.length) {
-        event.reply('query-result', results);
+        event.reply('queries-results', results);
       }
     });
   });
@@ -133,7 +133,8 @@ ipcMain.on('delete-material', (event, { materialId, imageName }) => {
         }
       });
 
-      event.reply('delete-material-result', { result });
+      // event.reply('delete-material-result', { result });
+      event.reply('delete-material-result', result);
     }
   });
 });
@@ -194,6 +195,22 @@ ipcMain.on('delete-practica', (event, practicaId) => {
       event.reply('delete-practica-result', { error });
     } else {
       event.reply('delete-practica-result', { result });
+    }
+  });
+});
+
+ipcMain.on('add-practica-materiales', (event, practica) => {
+  const values = practica['0']; // Acceder a los valores mediante la clave '0'
+  const { practicaId, materialId, cantidad } = values;
+
+  const query = `INSERT INTO materiales_practica (idPract, idMaterial, cantidad) VALUES (?, ?, ?)`;
+  const params = [practicaId, materialId, cantidad];
+
+  db.query(query, params, (error, result) => {
+    if (error) {
+      event.reply('add-practica-result-materiales', { error });
+    } else {
+      event.reply('add-practica-result-materiales', { result });
     }
   });
 });

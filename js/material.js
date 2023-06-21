@@ -18,12 +18,12 @@ window.addEventListener('DOMContentLoaded', () => {
     subtitle.textContent = '';
     tableMateriales.style.display = '';
 
-    if (data.results.length === 0) {
+    if (data.length === 0) {
       subtitle.textContent = 'Comienza agregando materiales';
       tableMateriales.style.display = 'none';
     }
 
-    const list = data.results;
+    const list = data;
     list.forEach((element) => {
       template += `
          <tr>

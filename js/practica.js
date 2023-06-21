@@ -1,6 +1,7 @@
-let btnform = document.getElementById('btnform');
+let btnGuardar = document.getElementById('btnform');
 let nombre = document.getElementById('nombre');
 let fecha = document.getElementById('fecha');
+let cantidad = document.getElementById('cantidad');
 let subtitle = document.getElementById('subtitle');
 let tablePracticas = document.getElementById('table-practicas');
 const listaMaterialesSeleccionados = [];
@@ -12,7 +13,6 @@ window.addEventListener('DOMContentLoaded', () => {
   // Obtiene los elementos del formulario
   const inputCantidad = document.getElementById('cantidad');
   const btnAgregarMaterial = document.getElementById('agregarMaterial');
-  const btnGuardar = document.getElementById('btnform');
 
   // Genera las opciones para los materiales
   materiales.forEach((material) => {
@@ -35,13 +35,11 @@ window.addEventListener('DOMContentLoaded', () => {
       };
 
       listaMaterialesSeleccionados.push(materialSeleccionado);
+      // console.log('materialSeleccionado:', materialSeleccionado);
 
       // Limpiar campos de selección de material y cantidad
       selectMateriales.value = '';
       inputCantidad.value = '';
-
-      // Opcional: Puedes mostrar en pantalla los materiales seleccionados en una lista o tabla
-      console.log(listaMaterialesSeleccionados);
     } else {
       alert('Por favor, selecciona un material y especifica la cantidad.');
     }
@@ -50,21 +48,9 @@ window.addEventListener('DOMContentLoaded', () => {
   // Event listener para el botón "Guardar"
   btnGuardar.addEventListener('click', () => {
     // Validar que se hayan seleccionado materiales y se haya ingresado un nombre de práctica
-    const nombrePractica = document.getElementById('nombre').value;
-    console.log('listaMaterialesSeleccionados: ', listaMaterialesSeleccionados);
-    if (nombrePractica && listaMaterialesSeleccionados.length > 0) {
-      // Lógica adicional para guardar la práctica con los materiales seleccionados y su cantidad
-      // Aquí puedes realizar la lógica necesaria para guardar los datos o mostrar algún mensaje de confirmación
 
-      // Limpiar campos y variables
-      document.getElementById('nombre').value = '';
-      selectMateriales.value = '';
-      inputCantidad.value = '';
-      listaMaterialesSeleccionados.length = 0;
-
-      // Opcional: Puedes actualizar la lista de prácticas mostrada en la tabla
-      console.log('Práctica guardada correctamente.');
-    } else {
+    // console.log('listaMaterialesSeleccionados:', listaMaterialesSeleccionados);
+    if (listaMaterialesSeleccionados.length === 0) {
       alert(
         'Por favor, ingresa un nombre de práctica y selecciona al menos un material.'
       );
@@ -84,22 +70,24 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   );
 
-  window.electronAPI.receiveQueryResult((event, data) => {
+  window.electronAPI.receiveQueriesResults((event, data) => {
     const [result1, result2] = data; // Obtener las respuestas individuales
 
     updateTable(result1);
     updateMateriales(result2);
   });
+
+  window.electronAPI.receiveQueryResult((event, data) => {
+    updateTable(data);
+  });
 });
 
-// TODO: Example
 const updateMateriales = (data) => {
-  console.log('updateMateriales', data);
+  materiales.length = 0; // Vaciar el arreglo de materiales existente
 
   data.map((material) => {
     materiales.push(material);
   });
-  console.log(materiales);
 
   // Limpiar las opciones existentes en el select de materiales
   selectMateriales.innerHTML = '';
@@ -125,6 +113,7 @@ const updateTable = (data) => {
     tablePracticas.style.display = 'none';
   }
 
+  console.log('data ->', data);
   const list = data;
   list.forEach((element) => {
     // Parsear la fecha
@@ -178,6 +167,7 @@ const handleDelete = (event) => {
 // Validar que los campos no vengan vacíos
 const isValidForm = () => {
   const nombreValue = nombre.value.trim();
+  // const cantidadValue = cantidad.value.trim();
   const fechaValue = fecha.value.trim();
 
   if (nombreValue === '' || fechaValue === '') {
@@ -210,24 +200,42 @@ const addPracticaRenderer = async () => {
   };
 
   const result = await window.electronAPI.addPractica(objPractica);
-  // console.log('Práctica agregada correctamente:', result);
 
-  // Limpiar todos los campos
-  clearInput();
+  if (listaMaterialesSeleccionados.length > 0) {
+    const practicaId = result.insertId;
+    const values = {};
 
-  // Petición a MySQL para obtener los datos actualizados
-  window.electronAPI.executeQuery('SELECT * FROM practica', (error, data) => {
-    if (error) {
-      console.error('Error al ejecutar la consulta:', error);
-    } else {
-      updateTable(data); // Actualizar la tabla con los nuevos datos
-    }
-  });
+    listaMaterialesSeleccionados.forEach((material, index) => {
+      values[index] = {
+        practicaId: practicaId,
+        materialId: material.id,
+        cantidad: material.cantidad,
+      };
+    });
+
+    const example = await window.electronAPI.addPracticaMateriales(values);
+
+    clearInput();
+
+    window.electronAPI.executeQueries(
+      ['SELECT * FROM practica', 'SELECT * FROM material'],
+      (error, data) => {
+        if (error) {
+          console.error('Error al ejecutar la consulta:', error);
+        } else {
+          const [result1, result2] = data;
+          updateTable(result1);
+          updateMateriales(result2);
+        }
+      }
+    );
+  }
 };
 
 const clearInput = () => {
   nombre.value = '';
   fecha.value = '';
+  cantidad.value = '';
 };
 
 const deletePractica = async (practicaId) => {
@@ -241,6 +249,57 @@ const deletePractica = async (practicaId) => {
       console.error('Error al ejecutar la consulta:', error);
     } else {
       updateTable(data); // Actualizar la tabla con los nuevos datos
+    }
+  });
+};
+
+const insertPractica = (
+  nomPract,
+  fecPract,
+  listaMaterialesSeleccionados,
+  callback
+) => {
+  const query = `INSERT INTO practica (nomPract, fecPract) VALUES ('${nomPract}', '${fecPract}')`;
+
+  // Primero, insertar la práctica en la tabla "practica"
+  window.electronAPI.executeQuery(query, (error, result) => {
+    if (error) {
+      alert('INTO ERROR');
+      callback(error);
+    } else {
+      console.log('result ->>>>>', result);
+      const practicaId = result.insertId; // Obtener el ID de la práctica insertada
+      console.log(
+        'listaMaterialesSeleccionados ->',
+        listaMaterialesSeleccionados
+      );
+
+      if (listaMaterialesSeleccionados.length > 0) {
+        // Si se seleccionaron materiales, construir la consulta para insertar en "materiales_practica"
+        let values = '';
+        listaMaterialesSeleccionados.forEach((material) => {
+          if (values !== '') {
+            values += ', ';
+          }
+          values += `(${practicaId}, ${material.id}, ${material.cantidad})`;
+        });
+        console.log('values ->', values);
+
+        const insertQuery = `INSERT INTO materiales_practica (idPractica, idMaterial, cantidad) VALUES ${values}`;
+
+        // Insertar los materiales seleccionados en la tabla "materiales_practica"
+        window.electronAPI.executeQuery(insertQuery, (error, result) => {
+          if (error) {
+            callback(error);
+          } else {
+            console.log('practicaId: ', practicaId);
+            callback(null, practicaId);
+          }
+        });
+      } else {
+        // Si no se seleccionaron materiales, simplemente llamar al callback con el ID de la práctica insertada
+        callback(null, practicaId);
+      }
     }
   });
 };

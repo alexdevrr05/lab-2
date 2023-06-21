@@ -12,11 +12,11 @@ window.addEventListener('DOMContentLoaded', () => {
     let template = '';
     title.textContent = 'Todos los materiales';
 
-    if (data.results.length === 0) {
+    if (data.length === 0) {
       title.textContent = 'Comienza agregando materiales';
     }
 
-    const list = data.results;
+    const list = data;
     list.forEach((material) => {
       template += `
         <div class="card">
