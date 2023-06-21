@@ -19,10 +19,6 @@ function getMaterialIdFromURL() {
 
 function displayMaterial(material) {
   // Accede a las propiedades del material y actualiza los elementos HTML correspondientes
-
-  //   const idElement = document.getElementById('material-id');
-  //   idElement.textContent = material.id;
-
   const nombreElement = document.getElementById('material-nombre');
   nombreElement.textContent = material.nombre;
 
