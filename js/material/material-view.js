@@ -16,19 +16,18 @@ window.addEventListener('DOMContentLoaded', () => {
       title.textContent = 'Comienza agregando materiales';
     }
 
-    console.log(data.results);
     const list = data.results;
     list.forEach((material) => {
       template += `
         <div class="card">
-            <a href="lista-materiales.html">
+            <a href="material-by-id.html">
             <div class="card-container">
                 <img src="../uploads/${material.imagen}" alt="img-1" />
             </div>
             </a>
             
             <div class="contenido-card">
-            <p>${material.nombre}</p>
+              <p>${material.nombre}</p>
             </div>
         </div>
         `;

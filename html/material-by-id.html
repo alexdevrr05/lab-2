@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self';"> -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:;">
+    <meta name="description" content="MaterialView">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../css/index.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/interfaz.css">
+    <title>Materiales del aboratorio</title>
+    <script defer src="../renderer.js"></script>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark  justify-content-center">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">Inicio</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation"></button>
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav ms-auto">
+                    <a class="nav-link active" aria-current="page" href="lista-materiales.html">material</a><br><br>
+                    <!-- <a class="nav-link active" aria-current="page" href="material-view.html">material</a><br><br> -->
+                    <a class="nav-link active" aria-current="page" href="reactivo.html">Reactivos</a>
+                    <a class="nav-link active" aria-current="page" href="practica.html">prácticas</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>materal by id</h1>
+    </div>
+    <script src="../js/material/material-by-id.js"></script>
+</body>
+
+</html>
