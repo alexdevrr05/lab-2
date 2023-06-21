@@ -79,6 +79,22 @@ ipcMain.on('add-material', (event, material) => {
   });
 });
 
+ipcMain.on('show-material', (event, materialId) => {
+  const query = `SELECT * FROM material WHERE id = ?`;
+  const values = [materialId];
+
+  db.query(query, values, (error, results) => {
+    if (error) {
+      // Maneja el error de la consulta
+      event.reply('show-material-result', { error });
+    } else {
+      // Envía los datos del material a la vista "material-by-id.html"
+      const material = results[0]; // Suponiendo que solo obtienes un único resultado
+      event.reply('show-material-result', { material });
+    }
+  });
+});
+
 ipcMain.on('delete-material', (event, { materialId, imageName }) => {
   const query = `DELETE FROM material WHERE id = ?`;
   const values = [materialId];

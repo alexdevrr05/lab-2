@@ -20,7 +20,7 @@ window.addEventListener('DOMContentLoaded', () => {
     list.forEach((material) => {
       template += `
         <div class="card">
-            <a href="material-by-id.html">
+            <a href="material-by-id.html?id=${material.id}">
             <div class="card-container">
                 <img src="../uploads/${material.imagen}" alt="img-1" />
             </div>

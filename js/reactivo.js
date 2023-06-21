@@ -9,7 +9,6 @@ let rojo = document.getElementById('rojo');
 let amarillo = document.getElementById('amarillo');
 let blanco = document.getElementById('blanco');
 let btnform = document.getElementById('btnform');
-let btnUpdate = document.getElementById('btnUpdate');
 let subtitle = document.getElementById('subtitle');
 
 window.addEventListener('DOMContentLoaded', () => {

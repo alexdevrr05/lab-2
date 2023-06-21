@@ -1,49 +1,40 @@
-console.log('hello world');
-// let title = document.getElementById('title');
-// let btnform = document.getElementById('btnform');
-// let nombre = document.getElementById('nombre');
-// let cantidad = document.getElementById('cantidad');
-// let volumen = document.getElementById('volumen');
-// let unidad = document.getElementById('unidad');
-// let imagen = document.getElementById('imagen');
+document.addEventListener('DOMContentLoaded', async () => {
+  const materialId = getMaterialIdFromURL(); // Obtén el ID del material de la URL actual
 
-// window.addEventListener('DOMContentLoaded', () => {
-//   const updateTable = (data) => {
-//     // let listadoMateriales = document.getElementById('listado-materiales');
-//     // let template = '';
-//     title.textContent = 'Todos los materiales';
+  try {
+    const material = await window.electronAPI.showMaterial(materialId);
+    displayMaterial(material);
+  } catch (error) {
+    console.error('Error al obtener los datos del material:', error);
+  }
+});
 
-//     if (data.results.length === 0) {
-//       title.textContent = 'Comienza agregando materiales';
-//     }
+function getMaterialIdFromURL() {
+  // Si la URL tiene el formato "material-by-id.html?id=123",
+  // obtenemos el ID así:
+  const urlParams = new URLSearchParams(window.location.search);
+  const materialId = urlParams.get('id');
+  return materialId;
+}
 
-//     const list = data.results;
-//     console.log('🚀 ~ file: material-by-id.js:20 ~ updateTable ~ list:', list);
-//     // list.forEach((material) => {
-//     //   template += `
-//     //     <div class="card">
-//     //         <a href="lista-materiales.html">
-//     //         <div class="card-container">
-//     //             <img src="../uploads/${material.imagen}" alt="img-1" />
-//     //         </div>
-//     //         </a>
+function displayMaterial(material) {
+  // Accede a las propiedades del material y actualiza los elementos HTML correspondientes
 
-//     //         <div class="contenido-card">
-//     //           <p>${material.nombre}</p>
-//     //         </div>
-//     //     </div>
-//     //     `;
+  //   const idElement = document.getElementById('material-id');
+  //   idElement.textContent = material.id;
 
-//     //   listadoMateriales.innerHTML = template;
-//     // });
-//   };
+  const nombreElement = document.getElementById('material-nombre');
+  nombreElement.textContent = material.nombre;
 
-//   // Petición inicial a MySQL para obtener los datos
-//   window.electronAPI.executeQuery('SELECT * FROM material', (error, data) => {
-//     if (error) {
-//       console.error('Error al ejecutar la consulta:', error);
-//     } else {
-//       updateTable(data); // Mostrar los resultados iniciales
-//     }
-//   });
-// });
+  const cantidadElement = document.getElementById('material-cantidad');
+  cantidadElement.textContent = material.cantidad;
+
+  const volumenElement = document.getElementById('material-volumen');
+  volumenElement.textContent = material.volumen;
+
+  const unidadElement = document.getElementById('material-unidad');
+  unidadElement.textContent = material.unidad;
+
+  const imagenElement = document.getElementById('material-imagen');
+  imagenElement.src = `../uploads/${material.imagen}`;
+}

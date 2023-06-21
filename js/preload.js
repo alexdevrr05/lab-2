@@ -21,6 +21,18 @@ contextBridge.exposeInMainWorld('electronAPI', {
       });
     });
   },
+  showMaterial: (materialId) => {
+    return new Promise((resolve, reject) => {
+      ipcRenderer.send('show-material', materialId);
+      ipcRenderer.once('show-material-result', (event, response) => {
+        if (response.error) {
+          reject(response.error);
+        } else {
+          resolve(response.material);
+        }
+      });
+    });
+  },
   deleteMaterial: (materialId, imageName) => {
     return new Promise((resolve, reject) => {
       ipcRenderer.send('delete-material', { materialId, imageName });

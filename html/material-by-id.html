@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../css/index.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/interfaz.css">
+    <link rel="stylesheet" href="../css/material-by.id.css">
     <title>Materiales del aboratorio</title>
     <script defer src="../renderer.js"></script>
 </head>
@@ -34,8 +34,27 @@
         </div>
     </nav>
 
-    <div class="container">
-        <h1>materal by id</h1>
+    <div class="container pt-4">
+        <a class="btn btn-success mb-4" href="material-view.html">Volver</a>
+
+        <div class="title-img-and-info">
+
+            <div class="img-container">
+                <img src="" alt="materialbyid" id="material-imagen">
+            </div>
+
+            <div class="info">
+                <h3 id="material-nombre"></h3>
+                <ul>
+                    <li>Cantidad<p id="material-cantidad"></p>
+                    </li>
+                    <li>Volumen<p id="material-volumen"></p>
+                    </li>
+                    <li>Unidad<p id="material-unidad"></p>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
     <script src="../js/material/material-by-id.js"></script>
 </body>
