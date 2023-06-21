@@ -34,8 +34,30 @@ ipcMain.on('execute-query', (event, query) => {
       event.reply('query-result', { error });
     } else {
       // console.log(results);
-      event.reply('query-result', { results });
+      // event.reply('query-result', { results });
+      event.reply('query-result', results);
     }
+  });
+});
+
+ipcMain.on('execute-queries', (event, queries) => {
+  const results = [];
+  let completedQueries = 0;
+
+  queries.forEach((query, index) => {
+    db.query(query, (error, result) => {
+      completedQueries++;
+
+      if (error) {
+        results[index] = { error };
+      } else {
+        results[index] = result;
+      }
+
+      if (completedQueries === queries.length) {
+        event.reply('query-result', results);
+      }
+    });
   });
 });
 

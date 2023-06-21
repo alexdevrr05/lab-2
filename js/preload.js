@@ -5,10 +5,9 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('electronAPI', {
   onUpdateTheme: (callback) => ipcRenderer.on('update-theme', callback),
   executeQuery: (query, callback) => ipcRenderer.send('execute-query', query),
+  executeQueries: (queries, callback) =>
+    ipcRenderer.send('execute-queries', queries),
   receiveQueryResult: (callback) => ipcRenderer.on('query-result', callback),
-  executeQueryWithValues: (query, values, callback) =>
-    ipcRenderer.send('execute-query-with-values', query, values, callback),
-
   addMaterial: (material) => {
     return new Promise((resolve, reject) => {
       ipcRenderer.send('add-material', material);

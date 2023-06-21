@@ -51,7 +51,7 @@ window.addEventListener('DOMContentLoaded', () => {
   btnGuardar.addEventListener('click', () => {
     // Validar que se hayan seleccionado materiales y se haya ingresado un nombre de práctica
     const nombrePractica = document.getElementById('nombre').value;
-
+    console.log('listaMaterialesSeleccionados: ', listaMaterialesSeleccionados);
     if (nombrePractica && listaMaterialesSeleccionados.length > 0) {
       // Lógica adicional para guardar la práctica con los materiales seleccionados y su cantidad
       // Aquí puedes realizar la lógica necesaria para guardar los datos o mostrar algún mensaje de confirmación
@@ -71,38 +71,35 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  window.electronAPI.executeQuery('SELECT * FROM material', (error, data) => {
-    if (error) {
-      console.error('Error al ejecutar la consulta:', error);
-    } else {
-      updateMateriales(data);
+  window.electronAPI.executeQueries(
+    ['SELECT * FROM practica', 'SELECT * FROM material'],
+    (error, data) => {
+      if (error) {
+        console.error('Error al ejecutar la consulta:', error);
+      } else {
+        const [result1, result2] = data;
+        updateTable(result1);
+        updateMateriales(result2);
+      }
     }
-  });
-
-  // window.electronAPI.executeQuery('SELECT * FROM practica', (error, data) => {
-  //   if (error) {
-  //     console.error('Error al ejecutar la consulta:', error);
-  //   } else {
-  //     updateTable(data);
-  //   }
-  // });
+  );
 
   window.electronAPI.receiveQueryResult((event, data) => {
-    const example = [...data];
+    const [result1, result2] = data; // Obtener las respuestas individuales
 
-    updateTable(example);
-    updateMateriales(example);
-    // updateTable(data);
-    // updateMateriales(data);
+    updateTable(result1);
+    updateMateriales(result2);
   });
 });
 
 // TODO: Example
 const updateMateriales = (data) => {
-  console.log('data - >', data);
+  console.log('updateMateriales', data);
 
-  materiales.length = 0; // Vaciar el arreglo de materiales existente
-  materiales.push(...data.results); // Agregar los datos de la consulta al arreglo materiales
+  data.map((material) => {
+    materiales.push(material);
+  });
+  console.log(materiales);
 
   // Limpiar las opciones existentes en el select de materiales
   selectMateriales.innerHTML = '';
@@ -123,12 +120,12 @@ const updateTable = (data) => {
   subtitle.textContent = '';
   tablePracticas.style.display = '';
 
-  if (data.results.length === 0) {
+  if (data.length === 0) {
     subtitle.textContent = 'Comienza creando una práctica';
     tablePracticas.style.display = 'none';
   }
 
-  const list = data.results;
+  const list = data;
   list.forEach((element) => {
     // Parsear la fecha
     const fecha = new Date(element.fecPract);
