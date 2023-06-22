@@ -82,18 +82,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
       });
     });
   },
-  // addPractica: (practica) => {
-  //   return new Promise((resolve, reject) => {
-  //     ipcRenderer.send('add-practica', practica);
-  //     ipcRenderer.once('add-practica-result', (event, response) => {
-  //       if (response.error) {
-  //         reject(response.error);
-  //       } else {
-  //         resolve(response.result);
-  //       }
-  //     });
-  //   });
-  // },
   addPracticaMateriales: (practica) => {
     return new Promise((resolve, reject) => {
       ipcRenderer.send('add-practica-materiales', practica);
@@ -107,19 +95,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
       });
     });
   },
-
-  // addPracticaMateriales: (practica) => {
-  //   return new Promise((resolve, reject) => {
-  //     ipcRenderer.send('add-practica-materiales', practica);
-  //     ipcRenderer.once('add-practica-result-materiales', (event, response) => {
-  //       if (response.error) {
-  //         reject(response.error);
-  //       } else {
-  //         resolve(response.result);
-  //       }
-  //     });
-  //   });
-  // },
   deletePractica: (practicaId) => {
     return new Promise((resolve, reject) => {
       ipcRenderer.send('delete-practica', practicaId);

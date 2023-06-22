@@ -216,14 +216,13 @@ ipcMain.on('delete-practica', (event, practicaId) => {
 });
 
 ipcMain.on('add-practica-materiales', (event, practica) => {
-  console.log('🚀 ~ file: main.js:249 ~ ipcMain.on ~ practica:', practica);
+  // console.log('🚀 ~ file: main.js:249 ~ ipcMain.on ~ practica:', practica);
 
   const values = practica['0']; // Acceder a los valores mediante la clave '0'
   const { materialId, practicaId, cantidad } = values;
 
   // id_material_practica es el id de la practica recien creada
   const query = `INSERT INTO materiales_practica (id_practica, id_material, cantidad) VALUES (?, ?, ?)`;
-  // const query = `INSERT INTO materiales_practica (id_material_practica, id_practica, id_material, cantidad) VALUES (?, ?, ?, ?)`;
   const params = [practicaId, materialId, cantidad];
 
   db.beginTransaction((err) => {
