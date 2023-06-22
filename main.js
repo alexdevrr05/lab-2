@@ -174,17 +174,33 @@ ipcMain.on('delete-reactivo', (event, reactivoId) => {
 });
 
 ipcMain.on('add-practica', (event, practica) => {
-  const query = `INSERT INTO practica (nomPract, fecPract) VALUES (?, ?)`;
-  const values = [practica.nombre, practica.fecha];
+  const { nombre, fecha } = practica;
 
-  db.query(query, values, (error, result) => {
+  const query = `INSERT INTO practica (nomPract, fecPract) VALUES (?, ?)`;
+  const params = [nombre, fecha];
+
+  db.query(query, params, (error, result) => {
     if (error) {
       event.reply('add-practica-result', { error });
     } else {
-      event.reply('add-practica-result', { result });
+      const insertId = result.insertId;
+      event.reply('add-practica-result', { insertId });
     }
   });
 });
+
+// ipcMain.on('add-practica', (event, practica) => {
+//   const query = `INSERT INTO practica (nomPract, fecPract) VALUES (?, ?)`;
+//   const values = [practica.nombre, practica.fecha];
+
+//   db.query(query, values, (error, result) => {
+//     if (error) {
+//       event.reply('add-practica-result', { error });
+//     } else {
+//       event.reply('add-practica-result', { result });
+//     }
+//   });
+// });
 
 ipcMain.on('delete-practica', (event, practicaId) => {
   const query = `DELETE FROM practica WHERE idPract = ?`;
@@ -200,17 +216,52 @@ ipcMain.on('delete-practica', (event, practicaId) => {
 });
 
 ipcMain.on('add-practica-materiales', (event, practica) => {
-  const values = practica['0']; // Acceder a los valores mediante la clave '0'
-  const { practicaId, materialId, cantidad } = values;
+  console.log('🚀 ~ file: main.js:249 ~ ipcMain.on ~ practica:', practica);
 
-  const query = `INSERT INTO materiales_practica (idPract, idMaterial, cantidad) VALUES (?, ?, ?)`;
+  const values = practica['0']; // Acceder a los valores mediante la clave '0'
+  const { materialId, practicaId, cantidad } = values;
+
+  // id_material_practica es el id de la practica recien creada
+  const query = `INSERT INTO materiales_practica (id_practica, id_material, cantidad) VALUES (?, ?, ?)`;
+  // const query = `INSERT INTO materiales_practica (id_material_practica, id_practica, id_material, cantidad) VALUES (?, ?, ?, ?)`;
   const params = [practicaId, materialId, cantidad];
 
-  db.query(query, params, (error, result) => {
-    if (error) {
-      event.reply('add-practica-result-materiales', { error });
+  db.beginTransaction((err) => {
+    if (err) {
+      event.reply('add-practica-result-materiales', { error: err });
     } else {
-      event.reply('add-practica-result-materiales', { result });
+      db.query(query, params, (error, result) => {
+        if (error) {
+          db.rollback(() => {
+            event.reply('add-practica-result-materiales', { error });
+          });
+        } else {
+          const updateQuery = `UPDATE material SET cantidad = cantidad - ? WHERE id = ?`;
+          const updateParams = [cantidad, materialId];
+
+          db.query(updateQuery, updateParams, (updateError, updateResult) => {
+            if (updateError) {
+              db.rollback(() => {
+                event.reply('add-practica-result-materiales', {
+                  error: updateError,
+                });
+              });
+            } else {
+              db.commit((commitError) => {
+                if (commitError) {
+                  db.rollback(() => {
+                    event.reply('add-practica-result-materiales', {
+                      error: commitError,
+                    });
+                  });
+                } else {
+                  event.reply('add-practica-result-materiales', { result });
+                }
+              });
+            }
+          });
+        }
+      });
     }
   });
 });

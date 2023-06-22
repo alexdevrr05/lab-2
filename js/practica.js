@@ -4,7 +4,7 @@ let fecha = document.getElementById('fecha');
 let cantidad = document.getElementById('cantidad');
 let subtitle = document.getElementById('subtitle');
 let tablePracticas = document.getElementById('table-practicas');
-const listaMaterialesSeleccionados = [];
+let listaMaterialesSeleccionados = [];
 const selectMateriales = document.getElementById('materiales');
 
 const materiales = [];
@@ -113,7 +113,6 @@ const updateTable = (data) => {
     tablePracticas.style.display = 'none';
   }
 
-  console.log('data ->', data);
   const list = data;
   list.forEach((element) => {
     // Parsear la fecha
@@ -199,23 +198,25 @@ const addPracticaRenderer = async () => {
     fecha: fecha.value,
   };
 
-  const result = await window.electronAPI.addPractica(objPractica);
-
   if (listaMaterialesSeleccionados.length > 0) {
-    const practicaId = result.insertId;
-    const values = {};
+    // const practicaId = result.insertId;
+    const practicaId = await window.electronAPI.addPractica(objPractica);
+
+    let values = {};
 
     listaMaterialesSeleccionados.forEach((material, index) => {
       values[index] = {
-        practicaId: practicaId,
+        practicaId,
         materialId: material.id,
         cantidad: material.cantidad,
       };
     });
 
-    const example = await window.electronAPI.addPracticaMateriales(values);
+    await window.electronAPI.addPracticaMateriales(values);
 
     clearInput();
+    values = {};
+    listaMaterialesSeleccionados = [];
 
     window.electronAPI.executeQueries(
       ['SELECT * FROM practica', 'SELECT * FROM material'],
@@ -249,57 +250,6 @@ const deletePractica = async (practicaId) => {
       console.error('Error al ejecutar la consulta:', error);
     } else {
       updateTable(data); // Actualizar la tabla con los nuevos datos
-    }
-  });
-};
-
-const insertPractica = (
-  nomPract,
-  fecPract,
-  listaMaterialesSeleccionados,
-  callback
-) => {
-  const query = `INSERT INTO practica (nomPract, fecPract) VALUES ('${nomPract}', '${fecPract}')`;
-
-  // Primero, insertar la práctica en la tabla "practica"
-  window.electronAPI.executeQuery(query, (error, result) => {
-    if (error) {
-      alert('INTO ERROR');
-      callback(error);
-    } else {
-      console.log('result ->>>>>', result);
-      const practicaId = result.insertId; // Obtener el ID de la práctica insertada
-      console.log(
-        'listaMaterialesSeleccionados ->',
-        listaMaterialesSeleccionados
-      );
-
-      if (listaMaterialesSeleccionados.length > 0) {
-        // Si se seleccionaron materiales, construir la consulta para insertar en "materiales_practica"
-        let values = '';
-        listaMaterialesSeleccionados.forEach((material) => {
-          if (values !== '') {
-            values += ', ';
-          }
-          values += `(${practicaId}, ${material.id}, ${material.cantidad})`;
-        });
-        console.log('values ->', values);
-
-        const insertQuery = `INSERT INTO materiales_practica (idPractica, idMaterial, cantidad) VALUES ${values}`;
-
-        // Insertar los materiales seleccionados en la tabla "materiales_practica"
-        window.electronAPI.executeQuery(insertQuery, (error, result) => {
-          if (error) {
-            callback(error);
-          } else {
-            console.log('practicaId: ', practicaId);
-            callback(null, practicaId);
-          }
-        });
-      } else {
-        // Si no se seleccionaron materiales, simplemente llamar al callback con el ID de la práctica insertada
-        callback(null, practicaId);
-      }
     }
   });
 };
