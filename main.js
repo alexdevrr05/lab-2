@@ -264,7 +264,6 @@ ipcMain.on('get-materiales-practica', (event, idPractica) => {
       console.log(error);
       event.reply('get-materiales-practica-result', { error });
     } else {
-      console.log('HELLO', { result });
       event.reply('get-materiales-practica-result', { result });
     }
   });
