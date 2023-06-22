@@ -107,4 +107,16 @@ contextBridge.exposeInMainWorld('electronAPI', {
       });
     });
   },
+  getMaterialesPractica: (idPractica) => {
+    return new Promise((resolve, reject) => {
+      ipcRenderer.send('get-materiales-practica', idPractica);
+      ipcRenderer.once('get-materiales-practica-result', (event, response) => {
+        if (response.error) {
+          reject(response.error);
+        } else {
+          resolve(response.result);
+        }
+      });
+    });
+  },
 });

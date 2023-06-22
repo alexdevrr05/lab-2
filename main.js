@@ -189,19 +189,6 @@ ipcMain.on('add-practica', (event, practica) => {
   });
 });
 
-// ipcMain.on('add-practica', (event, practica) => {
-//   const query = `INSERT INTO practica (nomPract, fecPract) VALUES (?, ?)`;
-//   const values = [practica.nombre, practica.fecha];
-
-//   db.query(query, values, (error, result) => {
-//     if (error) {
-//       event.reply('add-practica-result', { error });
-//     } else {
-//       event.reply('add-practica-result', { result });
-//     }
-//   });
-// });
-
 ipcMain.on('delete-practica', (event, practicaId) => {
   const query = `DELETE FROM practica WHERE idPract = ?`;
   const values = [practicaId];
@@ -261,6 +248,24 @@ ipcMain.on('add-practica-materiales', (event, practica) => {
           });
         }
       });
+    }
+  });
+});
+
+ipcMain.on('get-materiales-practica', (event, idPractica) => {
+  const query = `
+    SELECT m.nombre, mp.cantidad
+    FROM materiales_practica mp
+    INNER JOIN material m ON mp.id_material = m.id
+    WHERE mp.id_practica = ?`;
+
+  db.query(query, idPractica, (error, result) => {
+    if (error) {
+      console.log(error);
+      event.reply('get-materiales-practica-result', { error });
+    } else {
+      console.log('HELLO', { result });
+      event.reply('get-materiales-practica-result', { result });
     }
   });
 });

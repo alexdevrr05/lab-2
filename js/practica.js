@@ -101,7 +101,7 @@ const updateMateriales = (data) => {
   });
 };
 
-const updateTable = (data) => {
+const updateTable = async (data) => {
   let mylist = document.getElementById('mylist');
   let template = '';
 
@@ -113,42 +113,36 @@ const updateTable = (data) => {
     tablePracticas.style.display = 'none';
   }
 
-  const list = data;
-  list.forEach((element) => {
-    // Parsear la fecha
+  for (const element of data) {
     const fecha = new Date(element.fecPract);
-
-    // Obtener los componentes de la fecha
     const year = fecha.getFullYear();
-    const month = fecha.getMonth() + 1; // Los meses en JavaScript van de 0 a 11
+    const month = fecha.getMonth() + 1;
     const day = fecha.getDate();
-
-    // Formatear la fecha en el formato deseado (por ejemplo, DD/MM/YYYY)
     const formattedDate = `${day}/${month}/${year}`;
 
     template += `
-    <tr>
-       <td class="centrado">${element.nomPract}</td>
-       <td class="centrado">${formattedDate}</td>
-       <td class="centrado">
-         <ul>`;
+      <tr>
+        <td class="centrado">${element.nomPract}</td>
+        <td class="centrado">${formattedDate}</td>
+        <td class="centrado">
+          <ul>`;
 
-    // Agregar los materiales y su cantidad en una lista
-    listaMaterialesSeleccionados.forEach((material) => {
+    const materialesPractica = await getMaterialesPractica(element.idPract);
+
+    materialesPractica.forEach((material) => {
       template += `<li>${material.nombre} (${material.cantidad})</li>`;
     });
 
     template += `
-         </ul>
-       </td>
-       <td class="centrado">
-         <button class="btn btn-danger" value="${element.idPract}">
-           Eliminar
-         </button>
-       </td>
-    </tr>
- `;
-  });
+          </ul>
+        </td>
+        <td class="centrado">
+          <button class="btn btn-danger" value="${element.idPract}">
+            Eliminar
+          </button>
+        </td>
+      </tr>`;
+  }
 
   mylist.innerHTML = template;
 
@@ -240,8 +234,7 @@ const clearInput = () => {
 };
 
 const deletePractica = async (practicaId) => {
-  // await window.electronAPI.deletePractica(practicaId);
-  const result = await window.electronAPI.deletePractica(practicaId);
+  await window.electronAPI.deletePractica(practicaId);
   // console.log('Practica eliminada correctamente:', result);
 
   // Petición a MySQL para obtener los datos actualizados
@@ -252,4 +245,16 @@ const deletePractica = async (practicaId) => {
       updateTable(data); // Actualizar la tabla con los nuevos datos
     }
   });
+};
+
+const getMaterialesPractica = async (idPractica) => {
+  try {
+    const materialesPractica = await window.electronAPI.getMaterialesPractica(
+      idPractica
+    );
+    return materialesPractica; // Accede al resultado correctamente
+  } catch (error) {
+    console.error('Error al obtener los materiales de la práctica:', error);
+    return [];
+  }
 };
