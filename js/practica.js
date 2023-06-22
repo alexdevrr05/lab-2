@@ -125,7 +125,7 @@ const updateTable = async (data) => {
         <td class="centrado">${element.nomPract}</td>
         <td class="centrado">${formattedDate}</td>
         <td class="centrado">
-          <ul>`;
+          <ul style="list-style-type: none;">`;
 
     const materialesPractica = await getMaterialesPractica(element.idPract);
 

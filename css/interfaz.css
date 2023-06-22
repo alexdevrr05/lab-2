@@ -127,3 +127,7 @@ form {
     visibility: visible;
     transition-delay: 0s;
   }
+
+ul {
+    list-style-type: none;
+}
