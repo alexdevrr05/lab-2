@@ -34,6 +34,21 @@ window.addEventListener('DOMContentLoaded', () => {
         cantidad: parseInt(cantidad),
       };
 
+      // Validar si la cantidad ingresada excede la cantidad disponible del material
+      const materialDisponible = materiales.find(
+        (material) => material.id == selectedMaterial
+      );
+
+      if (
+        materialDisponible &&
+        materialSeleccionado.cantidad > materialDisponible.cantidad
+      ) {
+        alert(
+          'La cantidad ingresada supera la cantidad disponible del material.'
+        );
+        return; // Detener el flujo del programa si la validación no se cumple
+      }
+
       listaMaterialesSeleccionados.push(materialSeleccionado);
       // console.log('materialSeleccionado:', materialSeleccionado);
 

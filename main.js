@@ -203,8 +203,6 @@ ipcMain.on('delete-practica', (event, practicaId) => {
 });
 
 ipcMain.on('add-practica-materiales', (event, practica) => {
-  console.log('🚀 ~ file: main.js:272 ~ ipcMain.on ~ practica:', practica);
-
   const values = practica['0']; // Acceder a los valores mediante la clave '0'
   const practicaId = Object.values(values)[0].practicaId;
 
