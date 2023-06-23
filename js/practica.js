@@ -193,23 +193,22 @@ const addPracticaRenderer = async () => {
   };
 
   if (listaMaterialesSeleccionados.length > 0) {
-    // const practicaId = result.insertId;
     const practicaId = await window.electronAPI.addPractica(objPractica);
 
-    let values = {};
+    const values = {};
+    console.log('practicaId ->', practicaId);
 
-    listaMaterialesSeleccionados.forEach((material, index) => {
-      values[index] = {
-        practicaId,
+    listaMaterialesSeleccionados.forEach((material) => {
+      values[material.id] = {
+        practicaId: practicaId,
         materialId: material.id,
         cantidad: material.cantidad,
       };
     });
 
-    await window.electronAPI.addPracticaMateriales(values);
+    await window.electronAPI.addPracticaMateriales({ 0: values }); // Enviar los valores dentro de un objeto con clave '0'
 
     clearInput();
-    values = {};
     listaMaterialesSeleccionados = [];
 
     window.electronAPI.executeQueries(
