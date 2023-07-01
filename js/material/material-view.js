@@ -6,6 +6,8 @@ let volumen = document.getElementById('volumen');
 let unidad = document.getElementById('unidad');
 let imagen = document.getElementById('imagen');
 
+const botonBuscar = document.getElementById('boton-buscar');
+
 window.addEventListener('DOMContentLoaded', () => {
   const updateTable = (data) => {
     let listadoMateriales = document.getElementById('listado-materiales');
@@ -13,7 +15,8 @@ window.addEventListener('DOMContentLoaded', () => {
     title.textContent = 'Todos los materiales';
 
     if (data.length === 0) {
-      title.textContent = 'Comienza agregando materiales';
+      title.textContent =
+        'Comienza agregando materiales o no hay resultados de la búsqueda';
     }
 
     const list = data;
@@ -85,6 +88,27 @@ btnform.addEventListener('click', async (e) => {
     addProductRenderer();
   }
 });
+
+botonBuscar.addEventListener('click', (event) => {
+  event.preventDefault();
+  handleBuscarMateriales();
+});
+
+const handleBuscarMateriales = async () => {
+  const busquedaInput = document.getElementById('busqueda-input');
+  const query = busquedaInput.value.trim();
+
+  window.electronAPI.executeQuery(
+    `SELECT * FROM material WHERE nombre LIKE '%${query}%'`,
+    (error, data) => {
+      if (error) {
+        console.error('Error al ejecutar la consulta:', error);
+      } else {
+        updateTable(data);
+      }
+    }
+  );
+};
 
 const addProductRenderer = async () => {
   const objMaterial = {

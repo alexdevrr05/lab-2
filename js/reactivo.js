@@ -10,6 +10,9 @@ let amarillo = document.getElementById('amarillo');
 let blanco = document.getElementById('blanco');
 let btnform = document.getElementById('btnform');
 let subtitle = document.getElementById('subtitle');
+let tablePracticas = document.getElementById('table-reactivos');
+
+const botonBuscar = document.getElementById('boton-buscar');
 
 window.addEventListener('DOMContentLoaded', () => {
   const updateTable = (data) => {
@@ -18,7 +21,8 @@ window.addEventListener('DOMContentLoaded', () => {
     subtitle.textContent = '';
 
     if (data.length === 0) {
-      subtitle.textContent = 'Comienza creando una práctica';
+      subtitle.textContent =
+        'Comienza creando una práctica o no hay resultados de la búsqueda';
       tablePracticas.style.display = 'none';
     }
 
@@ -73,6 +77,27 @@ window.addEventListener('DOMContentLoaded', () => {
     updateTable(data);
   });
 });
+
+botonBuscar.addEventListener('click', (event) => {
+  event.preventDefault();
+  handleBuscarReactivos();
+});
+
+const handleBuscarReactivos = async () => {
+  const busquedaInput = document.getElementById('busqueda-input');
+  const query = busquedaInput.value.trim();
+
+  window.electronAPI.executeQuery(
+    `SELECT * FROM reactivos WHERE nombre LIKE '%${query}%' OR formula LIKE '%${query}%'`,
+    (error, data) => {
+      if (error) {
+        console.error('Error al ejecutar la consulta:', error);
+      } else {
+        updateTable(data);
+      }
+    }
+  );
+};
 
 const isValidForm = () => {
   const nombreValue = nombre.value.trim();
