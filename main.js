@@ -66,7 +66,8 @@ ipcMain.on('add-material', (event, material) => {
     fs.mkdirSync(uploadPath, { recursive: true });
   }
 
-  const query = `INSERT INTO material (nombre, cantidad, volumen, unidad, imagen) VALUES (?, ?, ?, ?, ?)`;
+  // TODO: this line will throw an error because some adjustments are missing in the new table structure
+  const query = `INSERT INTO materiales (clasificacion, nombre, cantidad, tamanio, unidades, caract_esp, imagen) VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
   const imageData = fs.readFileSync(material.imagen, 'base64');
   const imageExtension = path.extname(material.imagen);
@@ -102,7 +103,7 @@ ipcMain.on('add-material', (event, material) => {
 });
 
 ipcMain.on('show-material', (event, materialId) => {
-  const query = `SELECT * FROM material WHERE id = ?`;
+  const query = `SELECT * FROM materiales WHERE id = ?`;
   const values = [materialId];
 
   db.query(query, values, (error, results) => {
@@ -118,7 +119,7 @@ ipcMain.on('show-material', (event, materialId) => {
 });
 
 ipcMain.on('delete-material', (event, { materialId, imageName }) => {
-  const query = `DELETE FROM material WHERE id = ?`;
+  const query = `DELETE FROM materiales WHERE id = ?`;
   const values = [materialId];
 
   db.query(query, values, (error, result) => {
@@ -140,15 +141,17 @@ ipcMain.on('delete-material', (event, { materialId, imageName }) => {
 });
 
 ipcMain.on('add-reactivo', (event, reactivo) => {
-  const query = `INSERT INTO reactivos (nombre, formula, cantidad, azul, rojo, amarillo, blanco) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+  const query = `INSERT INTO reactivos (grupos, nombre, cantidad, unidad, cod_azul, cod_rojo, cod_amarillo, cod_blanco, piezas) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
   const values = [
+    reactivo.grupos,
     reactivo.nombre,
-    reactivo.formula,
     reactivo.cantidad,
-    reactivo.azul,
-    reactivo.rojo,
-    reactivo.amarillo,
-    reactivo.blanco,
+    reactivo.unidad,
+    reactivo.cod_azul,
+    reactivo.cod_rojo,
+    reactivo.cod_amarillo,
+    reactivo.cod_blanco,
+    reactivo.piezas,
   ];
 
   db.query(query, values, (error, result) => {
@@ -322,7 +325,7 @@ ipcMain.handle('login', (event, obj) => {
 
 function validatelogin(obj) {
   const { nomUsar, passUsar } = obj;
-  const sql = 'SELECT * FROM usuario WHERE nomUsar=? AND passUsar=?';
+  const sql = 'SELECT * FROM usuarios WHERE nomUsuario=? AND passUsuario=?';
   db.query(sql, [nomUsar, passUsar], (error, results, fields) => {
     if (error) {
       console.log(error);

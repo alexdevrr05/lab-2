@@ -38,7 +38,7 @@
 
                 <form>
                     <div class="input-group mb-3">
-                      <input type="text" class="form-control" placeholder="Nombre.." aria-label="Buscar" aria-describedby="boton-buscar" id="busqueda-input">
+                      <input type="text" class="form-control" placeholder="grupo o nombre" aria-label="Buscar" aria-describedby="boton-buscar" id="busqueda-input">
                       <div class="input-group-append">
                         <button class="btn btn-primary" type="button" id="boton-buscar">Buscar</button>
                       </div>
@@ -47,22 +47,27 @@
 
                 <form>
                     <div class="mb-0">
-                        <input type="text" class="form-control" id="clasificacion" placeholder="Clasificación" autofocus>
-
+                        <label for="grupos" class="form-label">Grupos</label>
+                        <input type="text" class="form-control" id="grupos" placeholder="Metal" autofocus>
                     </div>
                     <div class="mb-0">
                         <label for="nombre" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" placeholder="ej. Cloruro de sodio" autofocus>
+                        <input type="text" class="form-control" id="nombre" placeholder="Cloruro de sodio" autofocus>
 
                     </div>
                     <div class="mb-0">
-                        <label for="cantidad" class="form-label">Fórmula</label>
-                        <input type="text" class="form-control" id="formula" placeholder="ej. NaCI" autofocus>
-                    </div>
-                    <div class="mb-0">
-                        <label for="presentacion" class="form-label">Cantidad</label>
+                        <label for="cantidad" class="form-label">Cantidad</label>
                         <input type="number" class="form-control" id="cantidad" placeholder="100">
                     </div>
+                    <div class="mb-0">
+                        <label for="unidad" class="form-label">Unidad</label>
+                        <input type="text" class="form-control" id="unidad" placeholder="ml">
+                    </div>
+                    <div class="mb-0">
+                        <label for="piezas" class="form-label">Piezas</label>
+                        <input type="text" class="form-control" id="piezas" placeholder="2 piezas">
+                    </div>
+
                     <div class="my-1">
                         <table class="table">
                             <thead>
@@ -74,11 +79,9 @@
                                 <tr>
                                     <td class="centrado bg-blue">
                                         <input type="number" class="form-control" id="azul" placeholder="azul">
-                                        <input type="number" class="form-control" id="rojo" placeholder="Rojo">
-                                        <input type="number" class="form-control" id="amarillo" placeholder="Amarillo">
-                                        <!-- <input type="text" class="form-control" id="blanco" placeholder="Blanco"> -->
-                                        <input type="text" class="form-control" id="blanco" placeholder="Riesgo">
-
+                                        <input type="number" class="form-control" id="rojo" placeholder="rojo">
+                                        <input type="number" class="form-control" id="amarillo" placeholder="amarillo">
+                                        <input type="number" class="form-control" id="blanco" placeholder="blanco">
                                     </td>
                                     <td class="centradobg-blue"></td>
                                 </tr>
@@ -98,16 +101,16 @@
                 <table class="table table-reactivos table-dark  table-md">
                     <thead>
                         <tr>
-
+                            <th class="centrado">Grupos</th>
                             <th class="centrado">Nombre</th>
-                            <th class="centrado">Fórmula</th>
                             <th class="centrado">Cantidad</th>
-                            <th class="centrado">Salud</th>
-                            <th class="centrado">Inflamabilidad</th>
-                            <th class="centrado">Reactividad</th>
-                            <th class="centrado">Riesgo Específico</th>
-                            <th class="centrado"></th>
-                            <th class="centrado"></th>
+                            <th class="centrado">Unidad</th>
+                            <th class="centrado">Azul</th>
+                            <th class="centrado">Rojo</th>
+                            <th class="centrado">Amarillo</th>
+                            <th class="centrado">Blanco</th>
+                            <th class="centrado">Piezas</th>
+                            <th class="centrado" colspan="2">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="mylist">

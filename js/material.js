@@ -65,7 +65,7 @@ window.addEventListener('DOMContentLoaded', () => {
    */
 
   // Petición inicial a MySQL para obtener los datos
-  window.electronAPI.executeQuery('SELECT * FROM material', (error, data) => {
+  window.electronAPI.executeQuery('SELECT * FROM materiales', (error, data) => {
     if (error) {
       console.error('Error al ejecutar la consulta:', error);
     } else {
@@ -79,6 +79,7 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// TODO: CHANGE HERE
 // Validar que los campos no vengan vacíos
 const isValidForm = () => {
   const nombreValue = nombre.value.trim();
@@ -109,6 +110,8 @@ btnform.addEventListener('click', async (e) => {
 });
 
 const addProductRenderer = async () => {
+  // TODO: New values: clasificacion, nombre, cantidad, tamanio, unidades, caract_esp, imagen
+  // example: ('VIDRIO', 'CAJA PETRI', NULL, '100 X 10', 'mm', 'VIDRIO', NULL),
   const objMaterial = {
     nombre: nombre.value,
     cantidad: cantidad.value,
@@ -123,7 +126,7 @@ const addProductRenderer = async () => {
   clearinput();
 
   // Petición a MySQL para obtener los datos actualizados
-  window.electronAPI.executeQuery('SELECT * FROM material', (error, data) => {
+  window.electronAPI.executeQuery('SELECT * FROM materiales', (error, data) => {
     if (error) {
       console.error('Error al ejecutar la consulta:', error);
     } else {
@@ -132,6 +135,7 @@ const addProductRenderer = async () => {
   });
 };
 
+// TODO: CHANGE HERE
 const clearinput = () => {
   idmaterial.value = '';
   nombre.value = '';
@@ -147,7 +151,7 @@ const handleDelete = async (event) => {
   await window.electronAPI.deleteMaterial(materialId, imagenName);
 
   // Petición a MySQL para obtener los datos actualizados
-  window.electronAPI.executeQuery('SELECT * FROM material', (error, data) => {
+  window.electronAPI.executeQuery('SELECT * FROM materiales', (error, data) => {
     if (error) {
       console.error('Error al ejecutar la consulta:', error);
     } else {
