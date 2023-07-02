@@ -84,10 +84,12 @@ ipcMain.on('add-material', (event, material) => {
       event.reply('add-material-result', { error: error.message });
     } else {
       const values = [
+        material.clasificacion,
         material.nombre,
         material.cantidad,
-        material.volumen,
-        material.unidad,
+        material.tamanio,
+        material.unidades,
+        material.caract_esp,
         newImageName,
       ];
 

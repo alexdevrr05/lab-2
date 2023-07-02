@@ -19,17 +19,23 @@ function getMaterialIdFromURL() {
 
 function displayMaterial(material) {
   // Accede a las propiedades del material y actualiza los elementos HTML correspondientes
+
+  const clasificacionElement = document.getElementById(
+    'material-clasificacion'
+  );
+  clasificacionElement.textContent = material.clasificacion;
+
   const nombreElement = document.getElementById('material-nombre');
   nombreElement.textContent = material.nombre;
 
   const cantidadElement = document.getElementById('material-cantidad');
-  cantidadElement.textContent = material.cantidad;
+  cantidadElement.textContent = material.cantidad ? material.cantidad : 'null';
 
-  const volumenElement = document.getElementById('material-volumen');
-  volumenElement.textContent = material.volumen;
+  const volumenElement = document.getElementById('material-tamanio');
+  volumenElement.textContent = material.tamanio;
 
   const unidadElement = document.getElementById('material-unidad');
-  unidadElement.textContent = material.unidad;
+  unidadElement.textContent = material.unidades;
 
   const imagenElement = document.getElementById('material-imagen');
   imagenElement.src = `../uploads/${material.imagen}`;

@@ -1,9 +1,13 @@
 let title = document.getElementById('title');
 let btnform = document.getElementById('btnform');
+
+let clasificacion = document.getElementById('clasificacion');
 let nombre = document.getElementById('nombre');
 let cantidad = document.getElementById('cantidad');
-let volumen = document.getElementById('volumen');
-let unidad = document.getElementById('unidad');
+
+let tamanio = document.getElementById('tamanio');
+let unidades = document.getElementById('unidades');
+let caract_esp = document.getElementById('caract_esp');
 let imagen = document.getElementById('imagen');
 
 const botonBuscar = document.getElementById('boton-buscar');
@@ -19,7 +23,7 @@ window.addEventListener('DOMContentLoaded', () => {
         'Comienza agregando materiales o no hay resultados de la búsqueda';
     }
 
-    const list = data;
+    const list = data.reverse();
     list.forEach((material) => {
       template += `
         <div class="card">
@@ -47,7 +51,7 @@ window.addEventListener('DOMContentLoaded', () => {
   };
 
   // Petición inicial a MySQL para obtener los datos
-  window.electronAPI.executeQuery('SELECT * FROM material', (error, data) => {
+  window.electronAPI.executeQuery('select * from materiales', (error, data) => {
     if (error) {
       console.error('Error al ejecutar la consulta:', error);
     } else {
@@ -64,8 +68,8 @@ window.addEventListener('DOMContentLoaded', () => {
 const isValidForm = () => {
   const nombreValue = nombre.value.trim();
   const cantidadValue = cantidad.value.trim();
-  const volumenValue = volumen.value.trim();
-  const unidadValue = unidad.value.trim();
+  const volumenValue = tamanio.value.trim();
+  const unidadValue = unidades.value.trim();
   const imagenValue = imagen.value.trim();
 
   if (
@@ -99,7 +103,7 @@ const handleBuscarMateriales = async () => {
   const query = busquedaInput.value.trim();
 
   window.electronAPI.executeQuery(
-    `SELECT * FROM material WHERE nombre LIKE '%${query}%'`,
+    `select * from materiales WHERE nombre LIKE '%${query}%'`,
     (error, data) => {
       if (error) {
         console.error('Error al ejecutar la consulta:', error);
@@ -112,10 +116,12 @@ const handleBuscarMateriales = async () => {
 
 const addProductRenderer = async () => {
   const objMaterial = {
+    clasificacion: clasificacion.value,
     nombre: nombre.value,
     cantidad: cantidad.value,
-    volumen: volumen.value,
-    unidad: unidad.value,
+    tamanio: tamanio.value,
+    unidades: unidades.value,
+    caract_esp: caract_esp.value,
     imagen: imagen.files[0].path,
   };
 
@@ -125,7 +131,7 @@ const addProductRenderer = async () => {
   clearinput();
 
   // Petición a MySQL para obtener los datos actualizados
-  window.electronAPI.executeQuery('SELECT * FROM material', (error, data) => {
+  window.electronAPI.executeQuery('select * from materiales', (error, data) => {
     if (error) {
       console.error('Error al ejecutar la consulta:', error);
     } else {
@@ -137,8 +143,8 @@ const addProductRenderer = async () => {
 const clearinput = () => {
   nombre.value = '';
   cantidad.value = '';
-  volumen.value = '';
-  unidad.value = '';
+  tamanio.value = '';
+  unidades.value = '';
   imagen.value = '';
 };
 
@@ -148,7 +154,7 @@ const handleDelete = async (event) => {
   await window.electronAPI.deleteMaterial(materialId, imagenName);
 
   // Petición a MySQL para obtener los datos actualizados
-  window.electronAPI.executeQuery('SELECT * FROM material', (error, data) => {
+  window.electronAPI.executeQuery('select * from materiales', (error, data) => {
     if (error) {
       console.error('Error al ejecutar la consulta:', error);
     } else {

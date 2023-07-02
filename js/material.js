@@ -1,18 +1,22 @@
 // este es el archivo material.js
 
-let idmaterial = document.getElementById('idmaterial');
+let clasificacion = document.getElementById('clasificacion');
 let nombre = document.getElementById('nombre');
 let cantidad = document.getElementById('cantidad');
-let volumen = document.getElementById('volumen');
-let unidad = document.getElementById('unidad');
+let tamanio = document.getElementById('tamanio');
+let unidades = document.getElementById('unidades');
+let caract_esp = document.getElementById('caract_esp');
 let imagen = document.getElementById('imagen');
+
 let btnform = document.getElementById('btnform');
 let btnUpdate = document.getElementById('btnUpdate');
-const form = document.getElementById('material-form');
 let subtitle = document.getElementById('subtitle');
+
+const form = document.getElementById('material-form');
 
 window.addEventListener('DOMContentLoaded', () => {
   const updateTable = (data) => {
+    console.log('data ->', data);
     let mylista1 = document.getElementById('mylista1');
     let template = '';
     subtitle.textContent = '';
@@ -27,10 +31,12 @@ window.addEventListener('DOMContentLoaded', () => {
     list.forEach((element) => {
       template += `
          <tr>
+            <td class="centrado">${element.clasificacion}</td>
             <td class="centrado">${element.nombre}</td>
             <td class="centrado">${element.cantidad}</td>
-            <td class="centrado">${element.volumen}</td>
-            <td class="centrado">${element.unidad}</td>
+            <td class="centrado">${element.tamanio}</td>
+            <td class="centrado">${element.unidades}</td>
+            <td class="centrado">${element.caract_esp}</td>
             <td class="centrado">
               <img src="../uploads/${element.imagen}" alt="Imagen" width="100">
             </td>
@@ -82,17 +88,21 @@ window.addEventListener('DOMContentLoaded', () => {
 // TODO: CHANGE HERE
 // Validar que los campos no vengan vacíos
 const isValidForm = () => {
+  const clasificacionValue = clasificacion.value.trim();
   const nombreValue = nombre.value.trim();
   const cantidadValue = cantidad.value.trim();
-  const volumenValue = volumen.value.trim();
-  const unidadValue = unidad.value.trim();
+  const tamanioValue = tamanio.value.trim();
+  const unidadesValue = unidades.value.trim();
+  const caract_espValue = caract_esp.value.trim();
   const imagenValue = imagen.value.trim();
 
   if (
+    clasificacionValue === '' ||
     nombreValue === '' ||
     cantidadValue === '' ||
-    volumenValue === '' ||
-    unidadValue === '' ||
+    tamanioValue === '' ||
+    unidadesValue === '' ||
+    caract_espValue === '' ||
     imagenValue === ''
   ) {
     alert('Por favor, completa todos los campos');
@@ -113,10 +123,12 @@ const addProductRenderer = async () => {
   // TODO: New values: clasificacion, nombre, cantidad, tamanio, unidades, caract_esp, imagen
   // example: ('VIDRIO', 'CAJA PETRI', NULL, '100 X 10', 'mm', 'VIDRIO', NULL),
   const objMaterial = {
+    clasificacion: clasificacion.value,
     nombre: nombre.value,
     cantidad: cantidad.value,
-    volumen: volumen.value,
-    unidad: unidad.value,
+    tamanio: tamanio.value,
+    unidades: unidades.value,
+    caract_esp: caract_esp.value,
     imagen: imagen.files[0].path,
   };
 
@@ -137,7 +149,6 @@ const addProductRenderer = async () => {
 
 // TODO: CHANGE HERE
 const clearinput = () => {
-  idmaterial.value = '';
   nombre.value = '';
   cantidad.value = '';
   volumen.value = '';
