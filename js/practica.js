@@ -1,7 +1,10 @@
 let btnGuardar = document.getElementById('btnform');
+
 let nombre = document.getElementById('nombre');
+let descripcion = document.getElementById('descripcion');
 let fecha = document.getElementById('fecha');
 let cantidad = document.getElementById('cantidad');
+
 let subtitle = document.getElementById('subtitle');
 let tablePracticas = document.getElementById('table-practicas');
 let listaMaterialesSeleccionados = [];
@@ -73,7 +76,7 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   window.electronAPI.executeQueries(
-    ['SELECT * FROM practica', 'SELECT * FROM material'],
+    ['SELECT * FROM practicas', 'SELECT * FROM materiales'],
     (error, data) => {
       if (error) {
         console.error('Error al ejecutar la consulta:', error);
@@ -140,7 +143,7 @@ const updateTable = async (data) => {
         <td class="centrado">${element.nomPract}</td>
         <td class="centrado">${formattedDate}</td>
         <td class="centrado">
-          <ul style="list-style-type: none;">`;
+          <ul>`;
 
     const materialesPractica = await getMaterialesPractica(element.idPract);
 
@@ -150,6 +153,12 @@ const updateTable = async (data) => {
 
     template += `
           </ul>
+        </td>
+        <td class="centrado">${element.descPract}</td>
+        <td class="centrado">
+          <button class="btn btn-info" value="${element.idPract}">
+            Editar
+          </button>
         </td>
         <td class="centrado">
           <button class="btn btn-danger" value="${element.idPract}">
@@ -175,10 +184,11 @@ const handleDelete = (event) => {
 // Validar que los campos no vengan vacíos
 const isValidForm = () => {
   const nombreValue = nombre.value.trim();
+  const descripcionValue = descripcion.value.trim();
   // const cantidadValue = cantidad.value.trim();
   const fechaValue = fecha.value.trim();
 
-  if (nombreValue === '' || fechaValue === '') {
+  if (nombreValue === '' || fechaValue === '' || descripcionValue === '') {
     alert('Por favor, completa todos los campos');
     return false;
   }
@@ -204,6 +214,7 @@ btnform.addEventListener('click', async () => {
 const addPracticaRenderer = async () => {
   const objPractica = {
     nombre: nombre.value,
+    descripcion: descripcion.value,
     fecha: fecha.value,
   };
 
@@ -227,7 +238,7 @@ const addPracticaRenderer = async () => {
     listaMaterialesSeleccionados = [];
 
     window.electronAPI.executeQueries(
-      ['SELECT * FROM practica', 'SELECT * FROM material'],
+      ['SELECT * FROM practicas', 'SELECT * FROM materiales'],
       (error, data) => {
         if (error) {
           console.error('Error al ejecutar la consulta:', error);
@@ -244,6 +255,7 @@ const addPracticaRenderer = async () => {
 const clearInput = () => {
   nombre.value = '';
   fecha.value = '';
+  descripcion.value = '';
   cantidad.value = '';
 };
 
@@ -252,7 +264,7 @@ const deletePractica = async (practicaId) => {
   // console.log('Practica eliminada correctamente:', result);
 
   // Petición a MySQL para obtener los datos actualizados
-  window.electronAPI.executeQuery('SELECT * FROM practica', (error, data) => {
+  window.electronAPI.executeQuery('SELECT * FROM practicas', (error, data) => {
     if (error) {
       console.error('Error al ejecutar la consulta:', error);
     } else {

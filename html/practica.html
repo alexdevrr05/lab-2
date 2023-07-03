@@ -6,9 +6,10 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:;">
     <meta name="description" content="MaterialView">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../css/index.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/interfaz.css">
-    <title>Laboratorio de química</title>
+    <title>Prácticas</title>
 </head>
 
 <body>
@@ -38,6 +39,14 @@
                         <label for="nombre" class="">Nombre de la práctica</label>
                         <input type="text" class="form-control" id="nombre" placeholder="ej. Termoquímica" autofocus>
                     </div>
+
+                    <div class="mb-2">
+                        
+                        <label for="descripcion" class="form-label">Descripción de la práctica</label>
+                        <textarea id="descripcion" name="descripcion" rows="2"></textarea>
+                        <!-- <input type="text" class="form-control" id="descripcion" placeholder="" autofocus> -->
+                    </div>
+
                     <div class="mb-4">
                         <label for="fecha" class="form-label">Fecha</label>
                         <input type="date" class="form-control" id="fecha" placeholder="Fecha" autofocus>
@@ -45,10 +54,12 @@
 
                     <div class="mb-2">
                         <label for="materiales">Materiales disponibles</label>
-                        <select class="form-select" id="materiales" multiple>
+                        <div class="select-container">
+                          <select class="form-select" id="materiales" multiple>
                             <!-- opciones de materiales -->
-                        </select>
-                    </div>
+                          </select>
+                        </div>
+                      </div>
 
                     <div class="mb-2">
                         <label for="cantidad" class="">Cantidad</label>
@@ -74,7 +85,8 @@
                             <th class="centrado">Nombre</th>
                             <th class="centrado">Fecha</th>
                             <th class="centrado">Materiales</th>
-                            <th class="centrado">Acciones</th>
+                            <th class="centrado">Descripción</th>
+                            <th class="centrado" colspan="2">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="mylist">

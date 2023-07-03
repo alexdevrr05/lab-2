@@ -179,10 +179,10 @@ ipcMain.on('delete-reactivo', (event, reactivoId) => {
 });
 
 ipcMain.on('add-practica', (event, practica) => {
-  const { nombre, fecha } = practica;
+  const { nombre, descripcion, fecha } = practica;
 
-  const query = `INSERT INTO practica (nomPract, fecPract) VALUES (?, ?)`;
-  const params = [nombre, fecha];
+  const query = `INSERT INTO practicas (nomPract, descPract, fecPract) VALUES (?, ?, ?)`;
+  const params = [nombre, descripcion, fecha];
 
   db.query(query, params, (error, result) => {
     if (error) {
@@ -195,7 +195,7 @@ ipcMain.on('add-practica', (event, practica) => {
 });
 
 ipcMain.on('delete-practica', (event, practicaId) => {
-  const query = `DELETE FROM practica WHERE idPract = ?`;
+  const query = `DELETE FROM practicas WHERE idPract = ?`;
   const values = [practicaId];
 
   db.query(query, values, (error, result) => {
@@ -215,7 +215,7 @@ ipcMain.on('add-practica-materiales', (event, practica) => {
   const insertParams = [];
 
   Object.entries(values).forEach(([materialId, { cantidad }]) => {
-    const query = `INSERT INTO materiales_practica (id_practica, id_material, cantidad) VALUES (?, ?, ?)`;
+    const query = `INSERT INTO materiales_practicas (id_practica, id_material, cantidad) VALUES (?, ?, ?)`;
     const params = [practicaId, materialId, cantidad];
     insertQueries.push(query);
     insertParams.push(params);
@@ -252,7 +252,7 @@ ipcMain.on('add-practica-materiales', (event, practica) => {
               event.reply('add-practica-result-materiales', { error });
             });
           } else {
-            const updateQuery = `UPDATE material SET cantidad = cantidad - ? WHERE id = ?`;
+            const updateQuery = `UPDATE materiales SET cantidad = cantidad - ? WHERE id = ?`;
             const updateParams = [params[2], params[1]];
 
             db.query(updateQuery, updateParams, (updateError, updateResult) => {
@@ -278,8 +278,8 @@ ipcMain.on('add-practica-materiales', (event, practica) => {
 ipcMain.on('get-materiales-practica', (event, idPractica) => {
   const query = `
     SELECT m.nombre, mp.cantidad
-    FROM materiales_practica mp
-    INNER JOIN material m ON mp.id_material = m.id
+    FROM materiales_practicas mp
+    INNER JOIN materiales m ON mp.id_material = m.id
     WHERE mp.id_practica = ?`;
 
   db.query(query, idPractica, (error, result) => {
