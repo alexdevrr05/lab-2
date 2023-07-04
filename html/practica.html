@@ -3,100 +3,90 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:;">
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:;"> -->
     <meta name="description" content="MaterialView">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../css/index.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/interfaz.css">
     <title>Prácticas</title>
+    <script src="../js/helpers/navigationComponent.js" type="module"></script>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark justify-content-center">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="index.html">Inicio</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav ms-auto">
-                    <a class="nav-link active" aria-current="page" href="material-view.html">Material</a><br><br>
-                    <a class="nav-link active" aria-current="page" href="reactivo.html">Reactivos</a>
-                    <a class="nav-link active" aria-current="page" href="practica.html">Prácticas</a>
-                </div>
-            </div>
-        </div>
-    </nav>
+    <header id="header">
+    </header>
+    <script type="module">
+        import {addNavigationComponent} from '../js/helpers/navigationComponent.js';
+        document.addEventListener('DOMContentLoaded', addNavigationComponent);
+    </script>
 
     <div class="general">
-            <div class="bg-white form-container">
-                <h3>Prácticas</h3>
-                <form class="text-black">
-                    <div class="mb-2">
-                        <label for="nombre" class="">Nombre de la práctica</label>
-                        <input type="text" class="form-control" id="nombre" placeholder="ej. Termoquímica" autofocus>
-                    </div>
+        <div class="bg-white form-container">
+            <h3>Prácticas</h3>
+            <form class="text-black">
+                <div class="mb-2">
+                    <label for="nombre" class="">Nombre de la práctica</label>
+                    <input type="text" class="form-control" id="nombre" placeholder="ej. Termoquímica" autofocus>
+                </div>
 
-                    <div class="mb-2">
-                        
-                        <label for="descripcion" class="form-label">Descripción de la práctica</label>
-                        <textarea id="descripcion" name="descripcion" rows="2"></textarea>
-                        <!-- <input type="text" class="form-control" id="descripcion" placeholder="" autofocus> -->
-                    </div>
+                <div class="mb-2">
 
-                    <div class="mb-4">
-                        <label for="fecha" class="form-label">Fecha</label>
-                        <input type="date" class="form-control" id="fecha" placeholder="Fecha" autofocus>
-                    </div>
+                    <label for="descripcion" class="form-label">Descripción de la práctica</label>
+                    <textarea id="descripcion" name="descripcion" rows="2"></textarea>
+                    <!-- <input type="text" class="form-control" id="descripcion" placeholder="" autofocus> -->
+                </div>
 
-                    <div class="mb-2">
-                        <label for="materiales">Materiales disponibles</label>
-                        <div class="select-container">
-                          <select class="form-select" id="materiales" multiple>
+                <div class="mb-4">
+                    <label for="fecha" class="form-label">Fecha</label>
+                    <input type="date" class="form-control" id="fecha" placeholder="Fecha" autofocus>
+                </div>
+
+                <div class="mb-2">
+                    <label for="materiales">Materiales disponibles</label>
+                    <div class="select-container">
+                        <select class="form-select" id="materiales" multiple>
                             <!-- opciones de materiales -->
-                          </select>
-                        </div>
-                      </div>
-
-                    <div class="mb-2">
-                        <label for="cantidad" class="">Cantidad</label>
-                        <input type="number" class="form-control" id="cantidad" placeholder="Cantidad" autofocus>
+                        </select>
                     </div>
+                </div>
 
-                    <div class="mb-2">
-                        <button class="btn btn-success btn-sm" type="button" id="agregarMaterial">Agregar Material</button>
-                    </div>
+                <div class="mb-2">
+                    <label for="cantidad" class="">Cantidad</label>
+                    <input type="number" class="form-control" id="cantidad" placeholder="Cantidad" autofocus>
+                </div>
 
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-primary" type="button" id="btnform">Guardar práctica</button>
-                    </div>
-                </form>
-            </div>
+                <div class="mb-2">
+                    <button class="btn btn-success btn-sm" type="button" id="agregarMaterial">Agregar Material</button>
+                </div>
 
-            <div class="col-sm-12 col-md-10 col-lg-10 col-xl-10 py-4 bg-white">
-                <h3>Listado de Practicas</h3>
-                <h4 class="pt-3" id="subtitle"></h4>
-                <table class="table table-dark table-striped table-md" id="table-practicas">
-                    <thead>
-                        <tr>
-                            <th class="centrado">Nombre</th>
-                            <th class="centrado">Fecha</th>
-                            <th class="centrado">Materiales</th>
-                            <th class="centrado">Descripción</th>
-                            <th class="centrado" colspan="2">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="mylist">
-                        <!-- info -->
-                    </tbody>
-                </table>
-            </div>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-primary" type="button" id="btnform">Guardar práctica</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-sm-12 col-md-10 col-lg-10 col-xl-10 py-4 bg-white">
+            <h3>Listado de Practicas</h3>
+            <h4 class="pt-3" id="subtitle"></h4>
+            <table class="table table-dark table-striped table-md" id="table-practicas">
+                <thead>
+                    <tr>
+                        <th class="centrado">Nombre</th>
+                        <th class="centrado">Fecha</th>
+                        <th class="centrado">Materiales</th>
+                        <th class="centrado">Descripción</th>
+                        <th class="centrado" colspan="2">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="mylist">
+                    <!-- info -->
+                </tbody>
+            </table>
+        </div>
     </div>
 
-<script src="../js/practica.js"></script>
+    <script src="../js/practica.js"></script>
 </body>
 
 </html>
