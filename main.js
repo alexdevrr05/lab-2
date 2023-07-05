@@ -69,6 +69,7 @@ ipcMain.on('add-material', (event, material) => {
   // TODO: this line will throw an error because some adjustments are missing in the new table structure
   const query = `INSERT INTO materiales (clasificacion, nombre, cantidad, tamanio, unidades, caract_esp, imagen) VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
+  console.log('material.imagen ->', material.imagen);
   const imageData = fs.readFileSync(material.imagen, 'base64');
   const imageExtension = path.extname(material.imagen);
   const newImageName = `image_${Date.now()}${imageExtension}`;
@@ -138,6 +139,67 @@ ipcMain.on('delete-material', (event, { materialId, imageName }) => {
 
       // event.reply('delete-material-result', { result });
       event.reply('delete-material-result', result);
+    }
+  });
+});
+
+ipcMain.on('material:update', (event, updatedMaterial) => {
+  const { clasificacion, nombre, cantidad, tamanio, unidades, caract_esp, id } =
+    updatedMaterial;
+
+  const query = `UPDATE materiales SET clasificacion = ?, nombre = ?, cantidad = ?, tamanio = ?, unidades = ?, caract_esp = ? WHERE id = ?`;
+  const values = [
+    clasificacion,
+    nombre,
+    cantidad,
+    tamanio,
+    unidades,
+    caract_esp,
+    id,
+  ];
+
+  db.query(query, values, (error, result) => {
+    if (error) {
+      event.reply('material:update', { success: false, error: error.message });
+    } else {
+      event.reply('material:update', { success: true });
+    }
+  });
+});
+
+ipcMain.on('upload-material-image', (event, data) => {
+  const imageBase64Data = data.image;
+  const materialId = data.materialId;
+
+  // Eliminar el prefijo de la representación base64 de la imagen
+  const base64Data = imageBase64Data.replace(/^data:image\/\w+;base64,/, '');
+  // Convertir la imagen de base64 a un buffer
+  const imageBuffer = Buffer.from(base64Data, 'base64');
+
+  const newImageName = `image_${Date.now()}.jpg`; // Nombre de archivo generado para la imagen
+  // const newImageName = `${materialId}.jpg`; // Nombre de archivo generado para la imagen
+  const imagePath = path.join(uploadPath, newImageName); // Ruta completa para guardar la imagen
+
+  fs.writeFile(imagePath, imageBuffer, (error) => {
+    if (error) {
+      event.reply('upload-material-image-result', {
+        success: false,
+        error: error.message,
+      });
+    } else {
+      // Actualizar la columna "imagen" en la tabla correspondiente en la base de datos
+      const query = 'UPDATE materiales SET imagen = ? WHERE id = ?';
+      const values = [newImageName, materialId];
+      db.query(query, values, (error, result) => {
+        if (error) {
+          event.reply('upload-material-image-result', {
+            success: false,
+            error: error.message,
+          });
+        } else {
+          event.reply('upload-material-image-result', { success: true });
+        }
+      });
     }
   });
 });

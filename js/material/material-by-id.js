@@ -42,4 +42,9 @@ function displayMaterial(material) {
 
   const imagenElement = document.getElementById('material-imagen');
   imagenElement.src = `../uploads/${material.imagen}`;
+
+  const caractElement = document.getElementById('material-caract_esp');
+  caractElement.textContent = material.caract_esp
+    ? material.caract_esp
+    : 'none';
 }

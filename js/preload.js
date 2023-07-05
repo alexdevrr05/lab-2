@@ -46,6 +46,46 @@ contextBridge.exposeInMainWorld('electronAPI', {
       });
     });
   },
+  updateMaterial: (updatedMaterial) => {
+    return new Promise((resolve, reject) => {
+      ipcRenderer.once('material:update', (event, response) => {
+        if (response.success) {
+          resolve();
+        } else {
+          reject(response.error);
+        }
+      });
+      ipcRenderer.send('material:update', updatedMaterial);
+    });
+  },
+  uploadMaterialImage: (imageFile, materialId) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const base64Data = reader.result.split(',')[1];
+
+        ipcRenderer.send('upload-material-image', {
+          image: base64Data,
+          materialId,
+        });
+
+        ipcRenderer.once('upload-material-image-result', (event, response) => {
+          if (response.success) {
+            resolve();
+          } else {
+            reject(new Error(response.error));
+          }
+        });
+      };
+
+      reader.onerror = () => {
+        reject(new Error('Error al leer la imagen'));
+      };
+
+      reader.readAsDataURL(imageFile);
+    });
+  },
   addReactivo: (reactivo) => {
     return new Promise((resolve, reject) => {
       ipcRenderer.send('add-reactivo', reactivo);

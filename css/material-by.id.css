@@ -12,6 +12,11 @@ body {
     height: 300px;
 }
 
+.img-container img {
+    width: 100%;
+    height: 100%;
+}
+
 #material-imagen {
     width: 100%;
     height: 100%;
@@ -31,4 +36,8 @@ ul {
     padding: unset;
     display: flex;
     flex-direction: column;
+}
+
+.example {
+    display: flex;
 }

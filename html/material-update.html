@@ -8,7 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../css/index.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <title>Materiales del aboratorio</title>
+    <link rel="stylesheet" href="../css/material-by.id.css">
+    <title>Actualizar material</title>
     <script src="../js/helpers/navigationComponent.js" type="module"></script>
 </head>
 
@@ -23,24 +24,60 @@
     <div class="container pt-4">
         <a class="btn btn-success mb-4" href="material-view.html">Volver</a>
 
+        <div class="example">
+        <div class="img-container">
+            <img src="" alt="materialbyid" id="img-material">
+        </div>
+
         <div class="title-img-and-info">
-
-            <div class="img-container">
-                <img src="" alt="materialbyid" id="material-imagen">
-            </div>
-
+            
             <div class="info">
-                <h3 id="material-nombre"></h3>
-                <ul>
-                    <li>Cantidad<p id="material-cantidad"></p></li>
-                    <li>Tamaño<p id="material-tamanio"></p></li>
-                    <li>Unidad<p id="material-unidad"></p></li>
-                    <li>Clasificación<p id="material-clasificacion"></p></li>
-                </ul>
+
+                <div class="form-group">
+                    <label for="material-imagen">Imagen:</label>
+                    <input type="file" class="form-control" id="material-imagen">
+                    <!-- <input type="file" id="file-input"> -->
+                  </div>                
+
+                <div class="form-group">
+                    <label for="material-nombre">Nombre:</label>
+                    <input type="text" class="form-control" id="material-nombre">
+                </div>
+                <!-- <h3 id="material-nombre"></h3> -->
+
+                
+                <div class="form-group">
+                    <label for="material-clasificacion">Clasificación:</label>
+                    <input type="text" class="form-control" id="material-clasificacion">
+                </div>
+
+                <div class="form-group">
+                    <label for="material-cantidad">Cantidad:</label>
+                    <input type="number" class="form-control" id="material-cantidad">
+                </div>
+
+                <div class="form-group">
+                    <label for="material-tamanio">Tamaño:</label>
+                    <input type="text" class="form-control" id="material-tamanio">
+                </div>
+
+                <div class="form-group">
+                    <label for="material-unidades">Unidades:</label>
+                    <input type="text" class="form-control" id="material-unidades">
+                </div>
+
+                <div class="form-group">
+                    <label for="material-caract_esp">Características Especiales:</label>
+                    <textarea class="form-control" id="material-caract_esp" rows="3"></textarea>
+                </div>
+
+                <button id="btn-update" class="btn btn-info mt-2">Actualizar</button>
             </div>
         </div>
     </div>
-    <script src="../js/material/material-by-id.js"></script>
+
+    </div>
+    <script src="../js/material/material-update.js"></script>
 </body>
 
 </html>
