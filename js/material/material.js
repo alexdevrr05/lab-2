@@ -16,7 +16,6 @@ const form = document.getElementById('material-form');
 
 window.addEventListener('DOMContentLoaded', () => {
   const updateTable = (data) => {
-    console.log('data ->', data);
     let mylista1 = document.getElementById('mylista1');
     let template = '';
     subtitle.textContent = '';
@@ -47,9 +46,9 @@ window.addEventListener('DOMContentLoaded', () => {
               </button>
              </td>
              <td class="centrado">
-               <button class="btn btn-info" id="btnedit" value="${element.id}">
+               <a class="btn btn-info" id="btnedit" value="${element.id}" href="material-update.html?id=${element.id}">
                 Editar
-              </button>
+              </a>
             </td>
          </tr>
       `;

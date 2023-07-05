@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const materialId = getMaterialIdFromURL(); // Obtén el ID del material de la URL actual
 
+  const linkElement = document.querySelector('#update-button');
+  linkElement.href = `material-update.html?id=${materialId}`;
+
   try {
     const material = await window.electronAPI.showMaterial(materialId);
     displayMaterial(material);
