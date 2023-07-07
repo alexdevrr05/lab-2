@@ -43,9 +43,9 @@ window.addEventListener('DOMContentLoaded', () => {
             <td class="centrado" style="background-color: white; color: black;">${element.cod_blanco}</td>
             <td class="centrado">${element.piezas}</td>
             <td class="centrado">
-               <button class="btn btn-info" id="btnedit" value="${element.id}">
+               <a href="reactivo-update.html?id=${element.id}" class="btn btn-info" id="btnedit" value="${element.id}">
                 Editar
-              </button>
+              </a>
             </td>
             <td class="centrado">
               <button class="btn btn-danger" value="${element.id}">

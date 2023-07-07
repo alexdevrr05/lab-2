@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:;"> -->
+    <meta name="description" content="reactivo-update">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../css/index.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/material-by.id.css">
+    <title>Actualizar reactivo</title>
+    <script src="../js/helpers/navigationComponent.js" type="module"></script>
+</head>
+
+<body>
+    <header id="header">
+    </header>
+    <script type="module">
+        import {addNavigationComponent} from '../js/helpers/navigationComponent.js';
+        document.addEventListener('DOMContentLoaded', addNavigationComponent);
+    </script>
+
+    <div class="container d-flex pt-4">
+        
+        <div class="d-flex flex-column">
+            <a class="btn btn-success mb-4" href="reactivo.html">Volver</a>
+        </div>
+        <div class="example-container">
+             <div class="title-img-and-info">
+            
+               <div class="info">
+                    <div class="form-group">
+                        <label for="reactivo-nombre">Grupos:</label>
+                        <input type="text" class="form-control" id="reactivo-grupos">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reactivo-nombre">Nombre:</label>
+                        <input type="text" class="form-control" id="reactivo-nombre">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reactivo-cantidad">Cantidad:</label>
+                        <input type="number" class="form-control" id="reactivo-cantidad">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reactivo-unidad">Unidad:</label>
+                        <input type="text" class="form-control" id="reactivo-unidad">
+                    </div>
+
+                    <!-- TODO: COLORS CODE -->
+                    <div class="form-group">
+                        <label for="reactivo-azul">Código azul:</label>
+                        <input type="text" class="form-control" id="reactivo-azul">
+                    </div>
+                    <div class="form-group">
+                        <label for="reactivo-rojo">Código rojo:</label>
+                        <input type="text" class="form-control" id="reactivo-rojo">
+                    </div>
+                    <div class="form-group">
+                        <label for="reactivo-amarillo">Código amarillo:</label>
+                        <input type="text" class="form-control" id="reactivo-amarillo">
+                    </div>
+                    <div class="form-group">
+                        <label for="reactivo-blanco">Código blanco:</label>
+                        <input type="text" class="form-control" id="reactivo-blanco">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reactivo">Piezas:</label>
+                        <textarea class="form-control" id="reactivo-piezas" rows="3"></textarea>
+                    </div>
+
+                    <button id="btn-update" class="btn btn-info mt-2">Actualizar</button>
+                </div>
+        </div>
+    </div>
+
+    </div>
+    <script src="../js/reactivo/reactivo-update.js"></script>
+</body>
+
+</html>
+
+
+
+
+
+
+

@@ -34,6 +34,18 @@ contextBridge.exposeInMainWorld('electronAPI', {
       });
     });
   },
+  showReactivo: (reactivoId) => {
+    return new Promise((resolve, reject) => {
+      ipcRenderer.send('show-reactivo', reactivoId);
+      ipcRenderer.once('show-reactivo-result', (event, response) => {
+        if (response.error) {
+          reject(response.error);
+        } else {
+          resolve(response.reactivo);
+        }
+      });
+    });
+  },
   deleteMaterial: (materialId, imageName) => {
     return new Promise((resolve, reject) => {
       ipcRenderer.send('delete-material', { materialId, imageName });
@@ -86,6 +98,46 @@ contextBridge.exposeInMainWorld('electronAPI', {
       reader.readAsDataURL(imageFile);
     });
   },
+  updateEquipo: (updatedEquipo) => {
+    return new Promise((resolve, reject) => {
+      ipcRenderer.once('equipo:update', (event, response) => {
+        if (response.success) {
+          resolve();
+        } else {
+          reject(response.error);
+        }
+      });
+      ipcRenderer.send('equipo:update', updatedEquipo);
+    });
+  },
+  uploadEquipoImage: (imageFile, equipoId) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const base64Data = reader.result.split(',')[1];
+
+        ipcRenderer.send('upload-equipo-image', {
+          image: base64Data,
+          equipoId,
+        });
+
+        ipcRenderer.once('upload-equipo-image-result', (event, response) => {
+          if (response.success) {
+            resolve();
+          } else {
+            reject(new Error(response.error));
+          }
+        });
+      };
+
+      reader.onerror = () => {
+        reject(new Error('Error al leer la imagen'));
+      };
+
+      reader.readAsDataURL(imageFile);
+    });
+  },
   addReactivo: (reactivo) => {
     return new Promise((resolve, reject) => {
       ipcRenderer.send('add-reactivo', reactivo);
@@ -96,6 +148,18 @@ contextBridge.exposeInMainWorld('electronAPI', {
           resolve(response.result);
         }
       });
+    });
+  },
+  updatedReactivo: (updatedReactivo) => {
+    return new Promise((resolve, reject) => {
+      ipcRenderer.once('reactivo:update', (event, response) => {
+        if (response.success) {
+          resolve();
+        } else {
+          reject(response.error);
+        }
+      });
+      ipcRenderer.send('reactivo:update', updatedReactivo);
     });
   },
   deleteReactivo: (reactivoId) => {
@@ -151,6 +215,42 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return new Promise((resolve, reject) => {
       ipcRenderer.send('get-materiales-practica', idPractica);
       ipcRenderer.once('get-materiales-practica-result', (event, response) => {
+        if (response.error) {
+          reject(response.error);
+        } else {
+          resolve(response.result);
+        }
+      });
+    });
+  },
+  addEquipo: (equipo) => {
+    return new Promise((resolve, reject) => {
+      ipcRenderer.send('add-equipo-lab', equipo);
+      ipcRenderer.once('add-equipo-lab-result', (event, response) => {
+        if (response.error) {
+          reject(response.error);
+        } else {
+          resolve(response.result);
+        }
+      });
+    });
+  },
+  showEquipo: (equipoId) => {
+    return new Promise((resolve, reject) => {
+      ipcRenderer.send('show-equipo', equipoId);
+      ipcRenderer.once('show-equipo-result', (event, response) => {
+        if (response.error) {
+          reject(response.error);
+        } else {
+          resolve(response.equipo);
+        }
+      });
+    });
+  },
+  deleteEquipo: (equipoId, imageName) => {
+    return new Promise((resolve, reject) => {
+      ipcRenderer.send('delete-equipo', { equipoId, imageName });
+      ipcRenderer.once('delete-equipo-result', (event, response) => {
         if (response.error) {
           reject(response.error);
         } else {

@@ -69,7 +69,6 @@ ipcMain.on('add-material', (event, material) => {
   // TODO: this line will throw an error because some adjustments are missing in the new table structure
   const query = `INSERT INTO materiales (clasificacion, nombre, cantidad, tamanio, unidades, caract_esp, imagen) VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
-  console.log('material.imagen ->', material.imagen);
   const imageData = fs.readFileSync(material.imagen, 'base64');
   const imageExtension = path.extname(material.imagen);
   const newImageName = `image_${Date.now()}${imageExtension}`;
@@ -115,8 +114,37 @@ ipcMain.on('show-material', (event, materialId) => {
       event.reply('show-material-result', { error });
     } else {
       // Envía los datos del material a la vista "material-by-id.html"
-      const material = results[0]; // Suponiendo que solo obtienes un único resultado
+      const material = results[0];
       event.reply('show-material-result', { material });
+    }
+  });
+});
+
+ipcMain.on('show-equipo', (event, equipoId) => {
+  const query = `SELECT * FROM equipos WHERE id = ?`;
+  const values = [equipoId];
+
+  db.query(query, values, (error, results) => {
+    if (error) {
+      event.reply('show-equipo-result', { error });
+    } else {
+      const equipo = results[0];
+      event.reply('show-equipo-result', { equipo });
+    }
+  });
+});
+
+ipcMain.on('show-reactivo', (event, reactivoId) => {
+  const query = `SELECT * FROM reactivos WHERE id = ?`;
+  const values = [reactivoId];
+
+  db.query(query, values, (error, results) => {
+    if (error) {
+      // Maneja el error de la consulta
+      event.reply('show-reactivo-result', { error });
+    } else {
+      const reactivo = results[0];
+      event.reply('show-reactivo-result', { reactivo });
     }
   });
 });
@@ -167,6 +195,43 @@ ipcMain.on('material:update', (event, updatedMaterial) => {
   });
 });
 
+ipcMain.on('reactivo:update', (event, updatedMaterial) => {
+  const {
+    id,
+    grupos,
+    nombre,
+    cantidad,
+    unidad,
+    cod_azul,
+    cod_rojo,
+    cod_amarillo,
+    cod_blanco,
+    piezas,
+  } = updatedMaterial;
+
+  const query = `UPDATE reactivos SET grupos = ?,  nombre = ?, cantidad = ?, unidad = ?, cod_azul = ?, cod_rojo = ?, cod_amarillo = ?, cod_blanco = ?, piezas = ? WHERE id = ?`;
+  const values = [
+    grupos,
+    nombre,
+    cantidad,
+    unidad,
+    cod_azul,
+    cod_rojo,
+    cod_amarillo,
+    cod_blanco,
+    piezas,
+    id,
+  ];
+
+  db.query(query, values, (error, result) => {
+    if (error) {
+      event.reply('reactivo:update', { success: false, error: error.message });
+    } else {
+      event.reply('reactivo:update', { success: true });
+    }
+  });
+});
+
 ipcMain.on('upload-material-image', (event, data) => {
   const imageBase64Data = data.image;
   const materialId = data.materialId;
@@ -198,6 +263,55 @@ ipcMain.on('upload-material-image', (event, data) => {
           });
         } else {
           event.reply('upload-material-image-result', { success: true });
+        }
+      });
+    }
+  });
+});
+
+ipcMain.on('equipo:update', (event, updatedEquipo) => {
+  const { nombre, cantidad, practica, material, unidades, id } = updatedEquipo;
+
+  const query = `UPDATE equipos SET nombre = ?, cantidad = ?, practica = ?, material = ?, unidades = ? WHERE id = ?`;
+  const values = [nombre, cantidad, practica, material, unidades, id];
+
+  db.query(query, values, (error, result) => {
+    if (error) {
+      event.reply('equipo:update', { success: false, error: error.message });
+    } else {
+      event.reply('equipo:update', { success: true });
+    }
+  });
+});
+
+ipcMain.on('upload-equipo-image', (event, data) => {
+  const imageBase64Data = data.image;
+  const equipoId = data.equipoId;
+
+  const base64Data = imageBase64Data.replace(/^data:image\/\w+;base64,/, '');
+  const imageBuffer = Buffer.from(base64Data, 'base64');
+
+  const newImageName = `image_${Date.now()}.jpg`;
+
+  const imagePath = path.join(uploadPath, newImageName);
+
+  fs.writeFile(imagePath, imageBuffer, (error) => {
+    if (error) {
+      event.reply('upload-equipo-image-result', {
+        success: false,
+        error: error.message,
+      });
+    } else {
+      const query = 'UPDATE equipos SET imagen = ? WHERE id = ?';
+      const values = [newImageName, equipoId];
+      db.query(query, values, (error, result) => {
+        if (error) {
+          event.reply('upload-equipo-image-result', {
+            success: false,
+            error: error.message,
+          });
+        } else {
+          event.reply('upload-equipo-image-result', { success: true });
         }
       });
     }
@@ -350,6 +464,67 @@ ipcMain.on('get-materiales-practica', (event, idPractica) => {
       event.reply('get-materiales-practica-result', { error });
     } else {
       event.reply('get-materiales-practica-result', { result });
+    }
+  });
+});
+
+ipcMain.on('add-equipo-lab', (event, equipo) => {
+  if (!fs.existsSync(uploadPath)) {
+    fs.mkdirSync(uploadPath, { recursive: true });
+  }
+
+  // const { nombre, cantidad, practica, material, unidades, imagen } = equipo;
+
+  const query = `INSERT INTO equipos (nombre, cantidad, practica, material, unidades, imagen) VALUES (?, ?, ?, ?, ?, ?)`;
+  const imageData = fs.readFileSync(equipo.imagen, 'base64');
+  const imageExtension = path.extname(equipo.imagen);
+  const newImageName = `image_${Date.now()}${imageExtension}`;
+  const imagePath = path.join(uploadPath, newImageName);
+
+  const base64Data = imageData.replace(/^data:image\/\w+;base64,/, '');
+  const imageBuffer = Buffer.from(base64Data, 'base64');
+
+  fs.writeFile(imagePath, imageBuffer, (error) => {
+    if (error) {
+      event.reply('add-equipo-lab-result', { error: error.message });
+    } else {
+      const values = [
+        equipo.nombre,
+        equipo.cantidad,
+        equipo.practica,
+        equipo.material,
+        equipo.unidades,
+        newImageName,
+      ];
+
+      db.query(query, values, (error, result) => {
+        if (error) {
+          event.reply('add-equipo-lab-result', { error: error.message });
+        } else {
+          event.reply('add-equipo-lab-result', { result });
+        }
+      });
+    }
+  });
+});
+
+ipcMain.on('delete-equipo', (event, { equipoId, imageName }) => {
+  const query = `DELETE FROM equipos WHERE id = ?`;
+  const values = [equipoId];
+
+  db.query(query, values, (error, result) => {
+    if (error) {
+      event.reply('delete-equipo-result', { error });
+    } else {
+      // Eliminar la imagen del directorio "uploads"
+      const imagePath = path.join(__dirname, 'uploads', imageName);
+      fs.unlink(imagePath, (error) => {
+        if (error) {
+          console.error('Error al eliminar la imagen:', error);
+        }
+      });
+
+      event.reply('delete-equipo-result', result);
     }
   });
 });

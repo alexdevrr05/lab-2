@@ -11,6 +11,7 @@ function addNavigationComponent () {
               <a class="nav-link active" aria-current="page" href="material-view.html">Material</a><br><br>
               <a class="nav-link active" aria-current="page" href="reactivo.html">Reactivos</a>
               <a class="nav-link active" aria-current="page" href="practica.html">Prácticas</a>
+              <a class="nav-link active" aria-current="page" href="equipo-lab.html">Equipos</a>
             </div>
           </div>
         </div>

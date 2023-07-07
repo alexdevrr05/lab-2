@@ -20,9 +20,68 @@
         import {addNavigationComponent} from '../js/helpers/navigationComponent.js';
         document.addEventListener('DOMContentLoaded', addNavigationComponent);
     </script>
-    <div class="container">
-        <h1>Hello world from my equipo laboratorio</h1>
+    <div class="general">
+        <div class="form-container">
+
+            <form>
+                <div class="input-group mb-3">
+                  <input type="text" class="form-control" placeholder="Nombre o práctica" aria-label="Buscar" aria-describedby="boton-buscar" id="busqueda-input">
+                  <div class="input-group-append">
+                    <button class="btn btn-primary" type="button" id="boton-buscar">Buscar</button>
+                  </div>
+                </div>
+            </form>
+
+            <form id="material-form">
+                <div class="mb-2">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" placeholder="ej. Juego de montaje de stm para química analitica" autofocus>
+                </div>
+                <div class="mb-0">
+                    <label for="cantidad" class="form-label">Cantidad</label>
+                    <input type="number" class="form-control" id="cantidad" placeholder="ej. 6" autofocus>
+                </div>
+                <div class="mb-0">
+                    <label for="practica" class="form-label">Práctica</label>
+                    <input type="text" class="form-control" id="practica" placeholder="ej. Química analítica" autofocus>
+                </div>
+                <div class="mb-0">
+                    <label for="material" class="form-label">Material</label>
+                    <input type="text" class="form-control" id="material" placeholder="ej. Computadora" autofocus>
+                </div>
+                <div class="mb-0">
+                    <label for="unidades" class="form-label">Unidades</label>
+                    <input type="text" class="form-control" id="unidades" placeholder="ej. 10 o piezas" autofocus>
+                </div>
+                <div class="mb-4">
+                    <label for="imagen" class="form-label">Imagen</label>
+                    <input type="file" class="form-control file-input" accept="image/*" id="imagen">
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button class="btn btn-primary" type="button" id="btnform">Guardar</button>
+                </div>
+
+            </form>
+        </div>
+
+
+        <div class="contenedor">
+            <h2 class="pt-2" id="title"></h2>
+            <div class="contenedor-cards pt-2 pb-5" id="listado-equipos">
+                <!-- <div class="card">
+                    <div class="card-container">
+                        <img src="../uploads/image_1687126354288.jpeg" alt="img-1" />
+                    </div>
+                    <div class="contenido-card">
+                        <p>Material</p>
+                    </div>
+                </div>
+            -->
+            </div>
+        </div>
     </div>
+    <script src="../js/lab/equipo-lab.js"></script>
 </body>
 
 </html>

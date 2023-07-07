@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:;"> -->
+    <meta name="description" content="MaterialView">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../css/index.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/material-by.id.css">
+    <title>Equipos del aboratorio</title>
+    <script src="../js/helpers/navigationComponent.js" type="module"></script>
+</head>
+
+<body>
+    <header id="header">
+    </header>
+    <script type="module">
+        import {addNavigationComponent} from '../js/helpers/navigationComponent.js';
+        document.addEventListener('DOMContentLoaded', addNavigationComponent);
+    </script>
+
+    <div class="container pt-4">
+        <a class="btn btn-success mb-4" href="equipo-lab.html">Volver</a>
+
+        <div class="title-img-and-info">
+
+            <div class="img-container">
+                <img src="" alt="equipo-img" id="equipo-imagen">
+            </div>
+
+            <div class="info">
+                <h3 id="equipo-nombre"></h3>
+                <ul>
+                    <li>Cantidad<p id="equipo-cantidad"></p></li>
+                    <li>Práctica<p id="equipo-practica"></p></li>
+                    <li>Material<p id="equipo-material"></p></li>
+                    <li>Unidades<p id="equipo-unidades"></p></li>
+                    <a id="update-button" class="btn btn-primary mb-4">Editar</a>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="../js/lab/equipo-by-id.js"></script>
+</body>
+
+</html>

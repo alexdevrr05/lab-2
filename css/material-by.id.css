@@ -38,6 +38,6 @@ ul {
     flex-direction: column;
 }
 
-.example {
+.example-container {
     display: flex;
 }
