@@ -9,6 +9,7 @@ let rojo = document.getElementById('rojo');
 let amarillo = document.getElementById('amarillo');
 let blanco = document.getElementById('blanco');
 let piezas = document.getElementById('piezas');
+let imagen = document.getElementById('imagen');
 
 let btnform = document.getElementById('btnform');
 
@@ -16,6 +17,7 @@ let listadoReactivos = document.getElementById('listado-reactivos');
 let title = document.getElementById('title');
 
 const botonBuscar = document.getElementById('boton-buscar');
+const busquedaInput = document.getElementById('busqueda-input');
 
 window.addEventListener('DOMContentLoaded', () => {
   const updateTable = (data) => {
@@ -87,7 +89,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const handleDelete = (event) => {
     const practicaId = event.target.value;
-    deleteReactivo(practicaId);
+    const imagenName = event.target.getAttribute('data-imagen');
+    deleteReactivo(practicaId, imagenName);
   };
 
   window.electronAPI.executeQuery('SELECT * FROM reactivos', (error, data) => {
@@ -106,6 +109,13 @@ window.addEventListener('DOMContentLoaded', () => {
 botonBuscar.addEventListener('click', (event) => {
   event.preventDefault();
   handleBuscarReactivos();
+});
+
+busquedaInput.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    handleBuscarReactivos();
+  }
 });
 
 const handleBuscarReactivos = async () => {
@@ -134,6 +144,7 @@ const isValidForm = () => {
   const amarilloValue = amarillo.value.trim();
   const blancoValue = blanco.value.trim();
   const piezasValue = piezas.value.trim();
+  const imagenValue = imagen.value.trim();
 
   if (
     gruposValue === '' ||
@@ -144,7 +155,8 @@ const isValidForm = () => {
     unidadValue === '' ||
     amarilloValue === '' ||
     blancoValue === '' ||
-    piezasValue === ''
+    piezasValue === '' ||
+    imagenValue === ''
   ) {
     alert('Por favor, completa todos los campos');
     return false;
@@ -170,10 +182,11 @@ const addProductRenderer = async () => {
     cod_amarillo: parseInt(amarillo.value),
     cod_blanco: parseInt(blanco.value),
     piezas: piezas.value,
+    imagen: imagen.files[0].path,
   };
   // console.log('objReactivo ->', objReactivo);
 
-  const result = await window.electronAPI.addReactivo(objReactivo);
+  await window.electronAPI.addReactivo(objReactivo);
   // console.log('Reactivo agregado correctamente:', result);
 
   clearInput();
@@ -188,8 +201,10 @@ const addProductRenderer = async () => {
 };
 
 const clearInput = () => {
+  grupos.value = '';
   nombre.value = '';
   cantidad.value = '';
+  unidad.value = '';
   azul.value = '';
   rojo.value = '';
   amarillo.value = '';
@@ -197,8 +212,8 @@ const clearInput = () => {
   piezas.value = '';
 };
 
-const deleteReactivo = async (reactivoId) => {
-  await window.electronAPI.deleteReactivo(reactivoId);
+const deleteReactivo = async (reactivoId, imagenName) => {
+  await window.electronAPI.deleteReactivo(reactivoId, imagenName);
   // const result = await window.electronAPI.deleteReactivo(reactivoId);
   // console.log('Reactivo eliminado correctamente:', result);
 

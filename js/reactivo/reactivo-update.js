@@ -1,16 +1,16 @@
 document.addEventListener('DOMContentLoaded', async () => {
-  const reactivoId = getReactivoIdFromURL(); // Obtén el ID del material de la URL actual
+  const reactivoId = getReactivoIdFromURL();
 
   try {
     const reactivo = await window.electronAPI.showReactivo(reactivoId);
     displayReactivoInfo(reactivo);
   } catch (error) {
-    console.error('Error al obtener los datos del material:', error);
+    console.error('Error al obtener los reactivos:', error);
   }
 });
 
 const btnUpdate = document.getElementById('btn-update');
-btnUpdate.addEventListener('click', updateMaterial);
+btnUpdate.addEventListener('click', updateReactivo);
 
 function getReactivoIdFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -19,6 +19,8 @@ function getReactivoIdFromURL() {
 }
 
 function displayReactivoInfo(reactivo) {
+  const reactivoImagen = document.getElementById('reactivo-img');
+
   const gruposInput = document.getElementById('reactivo-grupos');
   const nombreInput = document.getElementById('reactivo-nombre');
   const cantidadInput = document.getElementById('reactivo-cantidad');
@@ -28,6 +30,8 @@ function displayReactivoInfo(reactivo) {
   const amarilloInput = document.getElementById('reactivo-amarillo');
   const blancoInput = document.getElementById('reactivo-blanco');
   const piezasInput = document.getElementById('reactivo-piezas');
+
+  reactivoImagen.src = `../uploads/${reactivo.imagen}`;
 
   gruposInput.value = reactivo.grupos ? reactivo.grupos : null;
   nombreInput.value = reactivo.nombre ? reactivo.nombre : null;
@@ -40,8 +44,8 @@ function displayReactivoInfo(reactivo) {
   piezasInput.value = reactivo.piezas;
 }
 
-async function updateMaterial() {
-  const reactivoId = getReactivoIdFromURL(); // Obtén el ID del material de la URL actual
+async function updateReactivo() {
+  const reactivoId = getReactivoIdFromURL();
 
   // Obtener los valores actualizados de los campos
   const grupos = document.getElementById('reactivo-grupos').value;
@@ -54,7 +58,6 @@ async function updateMaterial() {
   const cod_blanco = document.getElementById('reactivo-blanco').value;
   const piezas = document.getElementById('reactivo-piezas').value;
 
-  // Construir el objeto material con los nuevos valores
   const updatedReactivo = {
     id: reactivoId,
     grupos,
@@ -68,12 +71,23 @@ async function updateMaterial() {
     piezas,
   };
 
+  const imageInput = document.getElementById('reactivo-imagen');
+  if (imageInput.files.length > 0) {
+    const imageFile = imageInput.files[0];
+    try {
+      await window.electronAPI.uploadReactivoImage(imageFile, reactivoId);
+      updatedReactivo.imagen = `uploads/${reactivoId}.jpg`;
+    } catch (error) {
+      console.error('Error al actualizar la imagen:', error);
+    }
+  }
+
   try {
     // Llamar a la función de actualización del reactivo en el backend
     await window.electronAPI.updatedReactivo(updatedReactivo);
     alert('Reactivo actualizado correctamente');
     // Redirigir a la página de visualización del reactivo actualizado
-    window.location.href = `reactivo.html`;
+    window.location.href = `reactivo-by-id.html?id=${reactivoId}`;
   } catch (error) {
     console.error('Error al actualizar el reactivo:', error);
     alert(

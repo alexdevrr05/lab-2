@@ -383,38 +383,103 @@ ipcMain.on('upload-equipo-image', (event, data) => {
   });
 });
 
-ipcMain.on('add-reactivo', (event, reactivo) => {
-  const query = `INSERT INTO reactivos (grupos, nombre, cantidad, unidad, cod_azul, cod_rojo, cod_amarillo, cod_blanco, piezas) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-  const values = [
-    reactivo.grupos,
-    reactivo.nombre,
-    reactivo.cantidad,
-    reactivo.unidad,
-    reactivo.cod_azul,
-    reactivo.cod_rojo,
-    reactivo.cod_amarillo,
-    reactivo.cod_blanco,
-    reactivo.piezas,
-  ];
+ipcMain.on('upload-reactivo-image', (event, data) => {
+  const imageBase64Data = data.image;
+  const reactivoId = data.reactivoId;
 
-  db.query(query, values, (error, result) => {
+  const base64Data = imageBase64Data.replace(/^data:image\/\w+;base64,/, '');
+  const imageBuffer = Buffer.from(base64Data, 'base64');
+
+  const newImageName = `image_${Date.now()}.jpg`;
+
+  const imagePath = path.join(uploadPath, newImageName);
+
+  fs.writeFile(imagePath, imageBuffer, (error) => {
     if (error) {
-      event.reply('add-reactivo-result', { error });
+      event.reply('upload-reactivo-image-result', {
+        success: false,
+        error: error.message,
+      });
     } else {
-      event.reply('add-reactivo-result', { result });
+      const query = 'UPDATE reactivos SET imagen = ? WHERE id = ?';
+      const values = [newImageName, reactivoId];
+      db.query(query, values, (error, result) => {
+        if (error) {
+          event.reply('upload-reactivo-image-result', {
+            success: false,
+            error: error.message,
+          });
+        } else {
+          event.reply('upload-reactivo-image-result', { success: true });
+        }
+      });
     }
   });
 });
 
-ipcMain.on('delete-reactivo', (event, reactivoId) => {
+ipcMain.on('add-reactivo', (event, reactivo) => {
+  const query = `INSERT INTO reactivos (grupos, nombre, cantidad, unidad, cod_azul, cod_rojo, cod_amarillo, cod_blanco, piezas, imagen) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+  const imageData = fs.readFileSync(reactivo.imagen, 'base64');
+  const imageExtension = path.extname(reactivo.imagen);
+  const newImageName = `image_${Date.now()}${imageExtension}`;
+  const imagePath = path.join(uploadPath, newImageName);
+  const base64Data = imageData.replace(/^data:image\/\w+;base64,/, '');
+  const imageBuffer = Buffer.from(base64Data, 'base64');
+
+  fs.writeFile(imagePath, imageBuffer, (error) => {
+    if (error) {
+      event.reply('add-reactivo-result', { error: error.message });
+    } else {
+      const values = [
+        reactivo.grupos,
+        reactivo.nombre,
+        reactivo.cantidad,
+        reactivo.unidad,
+        reactivo.cod_azul,
+        reactivo.cod_rojo,
+        reactivo.cod_amarillo,
+        reactivo.cod_blanco,
+        reactivo.piezas,
+        newImageName,
+      ];
+
+      db.query(query, values, (error, result) => {
+        if (error) {
+          event.reply('add-reactivo-result', { error: error.message });
+        } else {
+          event.reply('add-reactivo-result', { result });
+        }
+      });
+    }
+  });
+});
+
+ipcMain.on('delete-reactivo', (event, { reactivoId, imageName }) => {
   const query = `DELETE FROM reactivos WHERE id = ?`;
   const values = [reactivoId];
+
+  // db.query(query, values, (error, result) => {
+  //   if (error) {
+  //     event.reply('delete-reactivo-result', { error });
+  //   } else {
+  //     event.reply('delete-reactivo-result', { result });
+  //   }
+  // });
 
   db.query(query, values, (error, result) => {
     if (error) {
       event.reply('delete-reactivo-result', { error });
     } else {
-      event.reply('delete-reactivo-result', { result });
+      // Eliminar la imagen del directorio "uploads"
+      const imagePath = path.join(__dirname, 'uploads', imageName);
+      fs.unlink(imagePath, (error) => {
+        if (error) {
+          console.error('Error al eliminar la imagen:', error);
+        }
+      });
+
+      event.reply('delete-reactivo-result', result);
     }
   });
 });

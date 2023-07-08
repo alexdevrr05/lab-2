@@ -214,9 +214,37 @@ contextBridge.exposeInMainWorld('electronAPI', {
       ipcRenderer.send('reactivo:update', updatedReactivo);
     });
   },
-  deleteReactivo: (reactivoId) => {
+  uploadReactivoImage: (imageFile, reactivoId) => {
     return new Promise((resolve, reject) => {
-      ipcRenderer.send('delete-reactivo', reactivoId);
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const base64Data = reader.result.split(',')[1];
+
+        ipcRenderer.send('upload-reactivo-image', {
+          image: base64Data,
+          reactivoId,
+        });
+
+        ipcRenderer.once('upload-reactivo-image-result', (event, response) => {
+          if (response.success) {
+            resolve();
+          } else {
+            reject(new Error(response.error));
+          }
+        });
+      };
+
+      reader.onerror = () => {
+        reject(new Error('Error al leer la imagen'));
+      };
+
+      reader.readAsDataURL(imageFile);
+    });
+  },
+  deleteReactivo: (reactivoId, imageName) => {
+    return new Promise((resolve, reject) => {
+      ipcRenderer.send('delete-reactivo', { reactivoId, imageName });
       ipcRenderer.once('delete-reactivo-result', (event, response) => {
         if (response.error) {
           reject(response.error);
