@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="reactivo-by-id">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../css/index.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/material-by.id.css">
+    <title>Reactivos</title>
+    <script src="../js/helpers/navigationComponent.js" type="module"></script>
+</head>
+
+<body>
+    <header id="header">
+    </header>
+    <script type="module">
+        import {addNavigationComponent} from '../js/helpers/navigationComponent.js';
+        document.addEventListener('DOMContentLoaded', addNavigationComponent);
+    </script>
+
+    <div class="container pt-4">
+        <a class="btn btn-success mb-4" href="reactivo.html">Volver</a>
+
+        <div class="title-img-and-info">
+
+            <div class="img-container">
+                <img src="" alt="reactivo-img" id="reactivo-imagen">
+            </div>
+
+            <div class="info">
+                <h3 id="reactivo-nombre"></h3>
+                <ul>
+                    <li>Grupos<p id="reactivo-grupos"></p></li>
+                    <li>Cantidad<p id="reactivo-cantidad"></p></li>
+                    <li>Unidad<p id="reactivo-unidad"></p></li>
+                    <li>Piezas<p id="reactivo-piezas"></p></li>
+                    <li>Código<p id="reactivo-código"></p></li>
+                    <li>Rojo<p id="reactivo-rojo"></p></li>
+                    <li>Amarillo<p id="reactivo-amarillo"></p></li>
+                    <li>Blanco<p id="reactivo-blanco"></p></li>
+                    <a id="update-button" class="btn btn-primary mb-4">Editar</a>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="../js/lab/equipo-by-id.js"></script>
+</body>
+
+</html>

@@ -11,52 +11,73 @@ let blanco = document.getElementById('blanco');
 let piezas = document.getElementById('piezas');
 
 let btnform = document.getElementById('btnform');
-let subtitle = document.getElementById('subtitle');
-let tablePracticas = document.getElementById('table-reactivos');
+
+let listadoReactivos = document.getElementById('listado-reactivos');
+let title = document.getElementById('title');
 
 const botonBuscar = document.getElementById('boton-buscar');
 
 window.addEventListener('DOMContentLoaded', () => {
   const updateTable = (data) => {
-    let mylist = document.getElementById('mylist');
+    // let mylist = document.getElementById('mylist');
+    let template = '';
 
-    subtitle.textContent = '';
+    title.textContent = 'Todos los reactivos';
+
+    listadoReactivos.style.display = '';
 
     if (data.length === 0) {
-      subtitle.textContent =
+      title.textContent =
         'Comienza creando una práctica o no hay resultados de la búsqueda';
-      tablePracticas.style.display = 'none';
+      listadoReactivos.style.display = 'none';
     }
 
-    let template = '';
     const list = data.reverse();
-    list.forEach((element) => {
+
+    list.forEach((reactivo) => {
       template += `
-         <tr>
-            <td class="centrado">${element.grupos}</td>
-            <td class="centrado">${element.nombre}</td>
-            <td class="centrado">${element.cantidad}</td>
-            <td class="centrado">${element.unidad}</td>
-            <td class="centrado" style="background-color: Blue" style="color: black">${element.cod_azul}</td>
-            <td class="centrado"style="background-color: red">${element.cod_rojo}</td>
-            <td class="centrado" style="background-color: yellow; color: black;">${element.cod_amarillo}</td>
-            <td class="centrado" style="background-color: white; color: black;">${element.cod_blanco}</td>
-            <td class="centrado">${element.piezas}</td>
-            <td class="centrado">
-               <a href="reactivo-update.html?id=${element.id}" class="btn btn-info" id="btnedit" value="${element.id}">
-                Editar
-              </a>
-            </td>
-            <td class="centrado">
-              <button class="btn btn-danger" value="${element.id}">
-                Eliminar
-              </button>
-             </td>
-         </tr>
+        <div class="card">
+          <a href="reactivo-by-id.html?id=${reactivo.id}">
+          <div class="card-container">
+              <img src="../uploads/${reactivo.imagen}" alt="img-${reactivo.id}" />
+          </div>
+          </a>
+          
+          <div class="contenido-card">
+            <p>${reactivo.nombre}</p>
+            <button class="btn btn-danger btn-sm delete" value="${reactivo.id}" data-imagen="${reactivo.imagen}">Eliminar</button>
+          </div>
+        </div>
       `;
     });
 
-    mylist.innerHTML = template;
+    // list.forEach((element) => {
+    //   template += `
+    //      <tr>
+    //         <td class="centrado">${element.grupos}</td>
+    //         <td class="centrado">${element.nombre}</td>
+    //         <td class="centrado">${element.cantidad}</td>
+    //         <td class="centrado">${element.unidad}</td>
+    //         <td class="centrado" style="background-color: Blue" style="color: black">${element.cod_azul}</td>
+    //         <td class="centrado"style="background-color: red">${element.cod_rojo}</td>
+    //         <td class="centrado" style="background-color: yellow; color: black;">${element.cod_amarillo}</td>
+    //         <td class="centrado" style="background-color: white; color: black;">${element.cod_blanco}</td>
+    //         <td class="centrado">${element.piezas}</td>
+    //         <td class="centrado">
+    //            <a href="reactivo-update.html?id=${element.id}" class="btn btn-info" id="btnedit" value="${element.id}">
+    //             Editar
+    //           </a>
+    //         </td>
+    //         <td class="centrado">
+    //           <button class="btn btn-danger" value="${element.id}">
+    //             Eliminar
+    //           </button>
+    //          </td>
+    //      </tr>
+    //   `;
+    // });
+
+    listadoReactivos.innerHTML = template;
 
     const deleteButtons = document.querySelectorAll('.btn.btn-danger');
     deleteButtons.forEach((button) => {

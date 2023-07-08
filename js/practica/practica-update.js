@@ -18,7 +18,10 @@ function getMaterialIdFromURL() {
   return practicaId;
 }
 
-function displayPractica(practica) {
+async function displayPractica(practica) {
+  // const materialesPractica = await getMaterialesPractica(practica.idPract);
+  // console.log('materialesPractica ->', materialesPractica);
+
   const equipoImagen = document.getElementById('img-practica');
 
   const nombreInput = document.getElementById('practica-nombre');
@@ -72,3 +75,15 @@ async function updatePractica() {
     alert('Error al actualizar la practica');
   }
 }
+
+const getMaterialesPractica = async (idPractica) => {
+  try {
+    const materialesPractica = await window.electronAPI.getMaterialesPractica(
+      idPractica
+    );
+    return materialesPractica; // Accede al resultado correctamente
+  } catch (error) {
+    console.error('Error al obtener los materiales de la práctica:', error);
+    return [];
+  }
+};

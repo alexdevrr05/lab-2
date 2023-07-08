@@ -17,8 +17,8 @@ const materiales = [];
 
 window.addEventListener('DOMContentLoaded', () => {
   // Obtiene los elementos del formulario
-  const inputCantidad = document.getElementById('cantidad');
-  const btnAgregarMaterial = document.getElementById('agregarMaterial');
+  // const inputCantidad = document.getElementById('cantidad');
+  // const btnAgregarMaterial = document.getElementById('agregarMaterial');
 
   // Genera las opciones para los materiales
   materiales.forEach((material) => {
@@ -29,42 +29,42 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   // Event listener para el botón "Agregar Material"
-  btnAgregarMaterial.addEventListener('click', () => {
-    const selectedMaterial = selectMateriales.value;
-    const cantidad = inputCantidad.value;
+  // btnAgregarMaterial.addEventListener('click', () => {
+  //   const selectedMaterial = selectMateriales.value;
+  //   const cantidad = inputCantidad.value;
 
-    // Validar que se haya seleccionado un material y se haya ingresado una cantidad
-    if (selectedMaterial && cantidad) {
-      const materialSeleccionado = {
-        id: selectedMaterial,
-        cantidad: parseInt(cantidad),
-      };
+  //   // Validar que se haya seleccionado un material y se haya ingresado una cantidad
+  //   if (selectedMaterial && cantidad) {
+  //     const materialSeleccionado = {
+  //       id: selectedMaterial,
+  //       cantidad: parseInt(cantidad),
+  //     };
 
-      // Validar si la cantidad ingresada excede la cantidad disponible del material
-      const materialDisponible = materiales.find(
-        (material) => material.id == selectedMaterial
-      );
+  //     // Validar si la cantidad ingresada excede la cantidad disponible del material
+  //     const materialDisponible = materiales.find(
+  //       (material) => material.id == selectedMaterial
+  //     );
 
-      if (
-        materialDisponible &&
-        materialSeleccionado.cantidad > materialDisponible.cantidad
-      ) {
-        alert(
-          'La cantidad ingresada supera la cantidad disponible del material.'
-        );
-        return; // Detener el flujo del programa si la validación no se cumple
-      }
+  //     if (
+  //       materialDisponible &&
+  //       materialSeleccionado.cantidad > materialDisponible.cantidad
+  //     ) {
+  //       alert(
+  //         'La cantidad ingresada supera la cantidad disponible del material.'
+  //       );
+  //       return; // Detener el flujo del programa si la validación no se cumple
+  //     }
 
-      listaMaterialesSeleccionados.push(materialSeleccionado);
-      // console.log('materialSeleccionado:', materialSeleccionado);
+  //     listaMaterialesSeleccionados.push(materialSeleccionado);
+  //     // console.log('materialSeleccionado:', materialSeleccionado);
 
-      // Limpiar campos de selección de material y cantidad
-      selectMateriales.value = '';
-      inputCantidad.value = '';
-    } else {
-      alert('Por favor, selecciona un material y especifica la cantidad.');
-    }
-  });
+  //     // Limpiar campos de selección de material y cantidad
+  //     selectMateriales.value = '';
+  //     inputCantidad.value = '';
+  //   } else {
+  //     alert('Por favor, selecciona un material y especifica la cantidad.');
+  //   }
+  // });
 
   // Event listener para el botón "Guardar"
   btnGuardar.addEventListener('click', () => {
@@ -77,23 +77,25 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   window.electronAPI.executeQueries(
-    ['SELECT * FROM practicas', 'SELECT * FROM materiales'],
+    ['SELECT * FROM practicas'],
     (error, data) => {
       if (error) {
         console.error('Error al ejecutar la consulta:', error);
       } else {
-        const [result1, result2] = data;
+        // const [result1, result2] = data;
+        const [result1] = data;
         updateTable(result1);
-        updateMateriales(result2);
+        // updateMateriales(result2);
       }
     }
   );
 
   window.electronAPI.receiveQueriesResults((event, data) => {
-    const [result1, result2] = data; // Obtener las respuestas individuales
+    // const [result1, result2] = data; // Obtener las respuestas individuales
+    const [result1] = data;
 
     updateTable(result1);
-    updateMateriales(result2);
+    // updateMateriales(result2);
   });
 
   window.electronAPI.receiveQueryResult((event, data) => {
@@ -101,29 +103,28 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-const updateMateriales = (data) => {
-  materiales.length = 0; // Vaciar el arreglo de materiales existente
+// const updateMateriales = (data) => {
+//   materiales.length = 0; // Vaciar el arreglo de materiales existente
 
-  data.map((material) => {
-    materiales.push(material);
-  });
+//   data.map((material) => {
+//     materiales.push(material);
+//   });
 
-  // Limpiar las opciones existentes en el select de materiales
-  selectMateriales.innerHTML = '';
+//   // Limpiar las opciones existentes en el select de materiales
+//   selectMateriales.innerHTML = '';
 
-  // Generar las opciones para los materiales obtenidos de la base de datos
-  materiales.forEach((material) => {
-    const option = document.createElement('option');
-    option.value = material.id;
-    option.textContent = `${material.nombre} (${material.cantidad})`; // Agrega la cantidad al lado del nombre
-    selectMateriales.appendChild(option);
-  });
-};
+//   // Generar las opciones para los materiales obtenidos de la base de datos
+//   materiales.forEach((material) => {
+//     const option = document.createElement('option');
+//     option.value = material.id;
+//     option.textContent = `${material.nombre} (${material.cantidad})`; // Agrega la cantidad al lado del nombre
+//     selectMateriales.appendChild(option);
+//   });
+// };
 
 const updateTable = async (data) => {
   // let mylist = document.getElementById('mylist');
   let template = '';
-
 
   title.textContent = 'Todas las prácticas';
 
@@ -135,12 +136,6 @@ const updateTable = async (data) => {
   }
 
   for (const element of data) {
-    const fecha = new Date(element.fecPract);
-    const year = fecha.getFullYear();
-    const month = fecha.getMonth() + 1;
-    const day = fecha.getDate();
-    const formattedDate = `${day}/${month}/${year}`;
-
     template += `
     <div class="card">
         <a href="practica-by-id.html?id=${element.idPract}">
@@ -155,7 +150,6 @@ const updateTable = async (data) => {
         </div>
     </div>
     `;
-
 
     // const materialesPractica = await getMaterialesPractica(element.idPract);
 
@@ -234,7 +228,6 @@ const addPracticaRenderer = async () => {
     const practicaId = await window.electronAPI.addPractica(objPractica);
 
     const values = {};
-    console.log('practicaId ->', practicaId);
 
     listaMaterialesSeleccionados.forEach((material) => {
       values[material.id] = {
@@ -250,14 +243,15 @@ const addPracticaRenderer = async () => {
     listaMaterialesSeleccionados = [];
 
     window.electronAPI.executeQueries(
-      ['SELECT * FROM practicas', 'SELECT * FROM materiales'],
+      // ['SELECT * FROM practicas', 'SELECT * FROM materiales'],
+      ['SELECT * FROM practicas'],
       (error, data) => {
         if (error) {
           console.error('Error al ejecutar la consulta:', error);
         } else {
           const [result1, result2] = data;
           updateTable(result1);
-          updateMateriales(result2);
+          // updateMateriales(result2);
         }
       }
     );
