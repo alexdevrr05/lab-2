@@ -5,8 +5,11 @@ let descripcion = document.getElementById('descripcion');
 let fecha = document.getElementById('fecha');
 let cantidad = document.getElementById('cantidad');
 
-let subtitle = document.getElementById('subtitle');
-let tablePracticas = document.getElementById('table-practicas');
+// let tablePracticas = document.getElementById('table-practicas');
+
+let listadoPracticas = document.getElementById('listado-practicas');
+let title = document.getElementById('title');
+
 let listaMaterialesSeleccionados = [];
 const selectMateriales = document.getElementById('materiales');
 
@@ -66,8 +69,6 @@ window.addEventListener('DOMContentLoaded', () => {
   // Event listener para el botón "Guardar"
   btnGuardar.addEventListener('click', () => {
     // Validar que se hayan seleccionado materiales y se haya ingresado un nombre de práctica
-
-    // console.log('listaMaterialesSeleccionados:', listaMaterialesSeleccionados);
     if (listaMaterialesSeleccionados.length === 0) {
       alert(
         'Por favor, ingresa un nombre de práctica y selecciona al menos un material.'
@@ -120,15 +121,17 @@ const updateMateriales = (data) => {
 };
 
 const updateTable = async (data) => {
-  let mylist = document.getElementById('mylist');
+  // let mylist = document.getElementById('mylist');
   let template = '';
 
-  subtitle.textContent = '';
-  tablePracticas.style.display = '';
+
+  title.textContent = 'Todas las prácticas';
+
+  listadoPracticas.style.display = '';
 
   if (data.length === 0) {
-    subtitle.textContent = 'Comienza creando una práctica';
-    tablePracticas.style.display = 'none';
+    title.textContent = 'Comienza creando una práctica';
+    listadoPracticas.style.display = 'none';
   }
 
   for (const element of data) {
@@ -139,36 +142,45 @@ const updateTable = async (data) => {
     const formattedDate = `${day}/${month}/${year}`;
 
     template += `
-      <tr>
-        <td class="centrado">${element.nomPract}</td>
-        <td class="centrado">${formattedDate}</td>
-        <td class="centrado">
-          <ul>`;
+    <div class="card">
+        <a href="practica-by-id.html?id=${element.idPract}">
+        <div class="card-container">
+            <img src="../uploads/${element.imagen}" alt="img-${element.idPract}" />
+        </div>
+        </a>
+        
+        <div class="contenido-card">
+          <p>${element.nomPract}</p>
+          <button class="btn btn-danger btn-sm delete" value="${element.idPract}" data-imagen="${element.imagen}">Eliminar</button>
+        </div>
+    </div>
+    `;
 
-    const materialesPractica = await getMaterialesPractica(element.idPract);
 
-    materialesPractica.forEach((material) => {
-      template += `<li>${material.nombre} (${material.cantidad})</li>`;
-    });
+    // const materialesPractica = await getMaterialesPractica(element.idPract);
 
-    template += `
-          </ul>
-        </td>
-        <td class="centrado">${element.descPract}</td>
-        <td class="centrado">
-          <button class="btn btn-info" value="${element.idPract}">
-            Editar
-          </button>
-        </td>
-        <td class="centrado">
-          <button class="btn btn-danger" value="${element.idPract}">
-            Eliminar
-          </button>
-        </td>
-      </tr>`;
+    // materialesPractica.forEach((material) => {
+    //   template += `<li>${material.nombre} (${material.cantidad})</li>`;
+    // });
+
+    // template += `
+    //       </ul>
+    //     </td>
+    //     <td class="centrado">${element.descPract}</td>
+    //     <td class="centrado">
+    //       <button class="btn btn-info" value="${element.idPract}">
+    //         Editar
+    //       </button>
+    //     </td>
+    //     <td class="centrado">
+    //       <button class="btn btn-danger" value="${element.idPract}">
+    //         Eliminar
+    //       </button>
+    //     </td>
+    //   </tr>`;
   }
 
-  mylist.innerHTML = template;
+  listadoPracticas.innerHTML = template;
 
   const deleteButtons = document.querySelectorAll('.btn.btn-danger');
   deleteButtons.forEach((button) => {

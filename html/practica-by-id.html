@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:;"> -->
+    <meta name="description" content="practica-by-id">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../css/index.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/material-by.id.css">
+    <title>Prácticas del laboratorio</title>
+    <script src="../js/helpers/navigationComponent.js" type="module"></script>
+</head>
+
+<body>
+    <header id="header">
+    </header>
+    <script type="module">
+        import {addNavigationComponent} from '../js/helpers/navigationComponent.js';
+        document.addEventListener('DOMContentLoaded', addNavigationComponent);
+    </script>
+
+    <div class="container pt-4">
+        <a class="btn btn-success mb-4" href="practica.html">Volver</a>
+
+        <div class="title-img-and-info">
+
+            <div class="img-container">
+                <img src="" alt="practicalbyid" id="practica-imagen">
+            </div>
+
+            <div class="info">
+                <h3 id="practica-nombre"></h3>
+                <ul>
+                    <li>Fecha<p id="practica-fecha"></p></li>
+                    <li>Descripción<p id="practica-desc"></p></li>
+                    <a id="update-button" class="btn btn-primary mb-4">Actualizar</a>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="../js/practica/practica-by-id.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:;"> -->
+    <meta name="description" content="equipo-update">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../css/index.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/material-by.id.css">
+    <title>Actualizar equipo</title>
+    <script src="../js/helpers/navigationComponent.js" type="module"></script>
+</head>
+
+<body>
+    <header id="header">
+    </header>
+    <script type="module">
+        import {addNavigationComponent} from '../js/helpers/navigationComponent.js';
+        document.addEventListener('DOMContentLoaded', addNavigationComponent);
+    </script>
+
+    <div class="container pt-4">
+        <a class="btn btn-success mb-4" href="practica.html">Volver</a>
+
+        <div class="example-container">
+        <div class="img-container">
+            <img src="" alt="practicabyid" id="img-practica">
+        </div>
+
+        <div class="title-img-and-info">
+            
+            <div class="info">
+                <div class="form-group">
+                    <label for="practica-nombre">Nombre:</label>
+                    <input type="text" class="form-control" id="practica-nombre">
+                </div>
+
+
+                <div class="form-group">
+                    <label for="practica-fecha">Fecha:</label>
+                    <!-- <input type="number" class="form-control" id="practica-fecha"> -->
+                    <input type="date" class="form-control" id="practica-fecha" placeholder="Fecha">
+                </div>
+
+                <div class="form-group">
+                    <label for="practica-desc">Descripción:</label>
+                    <input type="text" class="form-control" id="practica-desc">
+                </div>
+
+                <div class="form-group">
+                    <label for="practica-imagen">Imagen:</label>
+                    <input type="file" class="form-control" id="practica-imagen">
+                </div>
+
+
+                <button id="btn-update" class="btn btn-info mt-2">Actualizar</button>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    <script src="../js/practica/practica-update.js"></script>
+</body>
+
+</html>

@@ -120,6 +120,71 @@ ipcMain.on('show-material', (event, materialId) => {
   });
 });
 
+ipcMain.on('show-practica', (event, practicaId) => {
+  const query = `SELECT * FROM practicas WHERE idPract = ?`;
+  const values = [practicaId];
+
+  db.query(query, values, (error, results) => {
+    if (error) {
+      event.reply('show-practica-result', { error });
+    } else {
+      const practica = results[0];
+      event.reply('show-practica-result', { practica });
+    }
+  });
+});
+
+ipcMain.on('practica:update', (event, updatedPractica) => {
+  const { nombre, fecha, descripcion, idPract } = updatedPractica;
+
+  const query = `UPDATE practicas SET nomPract = ?, descPract = ?, fecPract = ? WHERE idPract = ?`;
+  const values = [nombre, descripcion, fecha, idPract];
+
+  db.query(query, values, (error, result) => {
+    if (error) {
+      event.reply('practica:update', { success: false, error: error.message });
+    } else {
+      event.reply('practica:update', { success: true });
+    }
+  });
+});
+
+ipcMain.on('upload-practica-image', (event, data) => {
+  const imageBase64Data = data.image;
+  const practicaId = data.practicaId;
+
+  // Eliminar el prefijo de la representación base64 de la imagen
+  const base64Data = imageBase64Data.replace(/^data:image\/\w+;base64,/, '');
+  // Convertir la imagen de base64 a un buffer
+  const imageBuffer = Buffer.from(base64Data, 'base64');
+
+  const newImageName = `image_${Date.now()}.jpg`; // Nombre de archivo generado para la imagen
+  // const newImageName = `${practicaId}.jpg`; // Nombre de archivo generado para la imagen
+  const imagePath = path.join(uploadPath, newImageName); // Ruta completa para guardar la imagen
+
+  fs.writeFile(imagePath, imageBuffer, (error) => {
+    if (error) {
+      event.reply('upload-practica-image-result', {
+        success: false,
+        error: error.message,
+      });
+    } else {
+      const query = 'UPDATE practicas SET imagen = ? WHERE idPract = ?';
+      const values = [newImageName, practicaId];
+      db.query(query, values, (error, result) => {
+        if (error) {
+          event.reply('upload-practica-image-result', {
+            success: false,
+            error: error.message,
+          });
+        } else {
+          event.reply('upload-practica-image-result', { success: true });
+        }
+      });
+    }
+  });
+});
+
 ipcMain.on('show-equipo', (event, equipoId) => {
   const query = `SELECT * FROM equipos WHERE id = ?`;
   const values = [equipoId];

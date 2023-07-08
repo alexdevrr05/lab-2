@@ -34,6 +34,18 @@ contextBridge.exposeInMainWorld('electronAPI', {
       });
     });
   },
+  showPractica: (practicaId) => {
+    return new Promise((resolve, reject) => {
+      ipcRenderer.send('show-practica', practicaId);
+      ipcRenderer.once('show-practica-result', (event, response) => {
+        if (response.error) {
+          reject(response.error);
+        } else {
+          resolve(response.practica);
+        }
+      });
+    });
+  },
   showReactivo: (reactivoId) => {
     return new Promise((resolve, reject) => {
       ipcRenderer.send('show-reactivo', reactivoId);
@@ -83,6 +95,46 @@ contextBridge.exposeInMainWorld('electronAPI', {
         });
 
         ipcRenderer.once('upload-material-image-result', (event, response) => {
+          if (response.success) {
+            resolve();
+          } else {
+            reject(new Error(response.error));
+          }
+        });
+      };
+
+      reader.onerror = () => {
+        reject(new Error('Error al leer la imagen'));
+      };
+
+      reader.readAsDataURL(imageFile);
+    });
+  },
+  updatePractica: (updatedPractica) => {
+    return new Promise((resolve, reject) => {
+      ipcRenderer.once('practica:update', (event, response) => {
+        if (response.success) {
+          resolve();
+        } else {
+          reject(response.error);
+        }
+      });
+      ipcRenderer.send('practica:update', updatedPractica);
+    });
+  },
+  uploadPracticaImage: (imageFile, practicaId) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const base64Data = reader.result.split(',')[1];
+
+        ipcRenderer.send('upload-practica-image', {
+          image: base64Data,
+          practicaId,
+        });
+
+        ipcRenderer.once('upload-practica-image-result', (event, response) => {
           if (response.success) {
             resolve();
           } else {
