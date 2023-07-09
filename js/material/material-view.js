@@ -154,6 +154,8 @@ const clearinput = () => {
   tamanio.value = '';
   unidades.value = '';
   imagen.value = '';
+  caract_esp.value = '';
+  clasificacion.value = '';
 };
 
 const handleDelete = async (event) => {
