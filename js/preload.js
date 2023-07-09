@@ -279,9 +279,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
       });
     });
   },
-  deletePractica: (practicaId) => {
+  deletePractica: (practicaId, imageName) => {
     return new Promise((resolve, reject) => {
-      ipcRenderer.send('delete-practica', practicaId);
+      ipcRenderer.send('delete-practica', { practicaId, imageName });
       ipcRenderer.once('delete-practica-result', (event, response) => {
         if (response.error) {
           reject(response.error);

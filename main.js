@@ -459,14 +459,6 @@ ipcMain.on('delete-reactivo', (event, { reactivoId, imageName }) => {
   const query = `DELETE FROM reactivos WHERE id = ?`;
   const values = [reactivoId];
 
-  // db.query(query, values, (error, result) => {
-  //   if (error) {
-  //     event.reply('delete-reactivo-result', { error });
-  //   } else {
-  //     event.reply('delete-reactivo-result', { result });
-  //   }
-  // });
-
   db.query(query, values, (error, result) => {
     if (error) {
       event.reply('delete-reactivo-result', { error });
@@ -485,22 +477,35 @@ ipcMain.on('delete-reactivo', (event, { reactivoId, imageName }) => {
 });
 
 ipcMain.on('add-practica', (event, practica) => {
-  const { nombre, descripcion, fecha } = practica;
+  const { nombre, descripcion, fecha, imagen } = practica;
 
-  const query = `INSERT INTO practicas (nomPract, descPract, fecPract) VALUES (?, ?, ?)`;
-  const params = [nombre, descripcion, fecha];
+  const query = `INSERT INTO practicas (nomPract, descPract, fecPract, imagen) VALUES (?, ?, ?, ?)`;
+  const imageData = fs.readFileSync(imagen, 'base64');
+  const imageExtension = path.extname(imagen);
+  const newImageName = `image_${Date.now()}${imageExtension}`;
+  const imagePath = path.join(uploadPath, newImageName);
 
-  db.query(query, params, (error, result) => {
+  const base64Data = imageData.replace(/^data:image\/\w+;base64,/, '');
+  const imageBuffer = Buffer.from(base64Data, 'base64');
+
+  fs.writeFile(imagePath, imageBuffer, (error) => {
     if (error) {
-      event.reply('add-practica-result', { error });
+      event.reply('add-practica-result', { error: error.message });
     } else {
-      const insertId = result.insertId;
-      event.reply('add-practica-result', { insertId });
+      const values = [nombre, descripcion, fecha, newImageName];
+
+      db.query(query, values, (error, result) => {
+        if (error) {
+          event.reply('add-practica-result', { error: error.message });
+        } else {
+          event.reply('add-practica-result', { result });
+        }
+      });
     }
   });
 });
 
-ipcMain.on('delete-practica', (event, practicaId) => {
+ipcMain.on('delete-practica', (event, { practicaId, imageName }) => {
   const query = `DELETE FROM practicas WHERE idPract = ?`;
   const values = [practicaId];
 
@@ -508,7 +513,14 @@ ipcMain.on('delete-practica', (event, practicaId) => {
     if (error) {
       event.reply('delete-practica-result', { error });
     } else {
-      event.reply('delete-practica-result', { result });
+      const imagePath = path.join(__dirname, 'uploads', imageName);
+      fs.unlink(imagePath, (error) => {
+        if (error) {
+          console.error('Error al eliminar la imagen:', error);
+        }
+      });
+
+      event.reply('delete-practica-result', result);
     }
   });
 });

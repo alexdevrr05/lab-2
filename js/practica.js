@@ -21,60 +21,24 @@ window.addEventListener('DOMContentLoaded', () => {
   // const btnAgregarMaterial = document.getElementById('agregarMaterial');
 
   // Genera las opciones para los materiales
-  materiales.forEach((material) => {
-    const option = document.createElement('option');
-    option.value = material.id;
-    option.textContent = `${material.nombre} (${material.cantidad})`; // Agrega la cantidad al lado del nombre
-    selectMateriales.appendChild(option);
-  });
-
-  // Event listener para el botón "Agregar Material"
-  // btnAgregarMaterial.addEventListener('click', () => {
-  //   const selectedMaterial = selectMateriales.value;
-  //   const cantidad = inputCantidad.value;
-
-  //   // Validar que se haya seleccionado un material y se haya ingresado una cantidad
-  //   if (selectedMaterial && cantidad) {
-  //     const materialSeleccionado = {
-  //       id: selectedMaterial,
-  //       cantidad: parseInt(cantidad),
-  //     };
-
-  //     // Validar si la cantidad ingresada excede la cantidad disponible del material
-  //     const materialDisponible = materiales.find(
-  //       (material) => material.id == selectedMaterial
-  //     );
-
-  //     if (
-  //       materialDisponible &&
-  //       materialSeleccionado.cantidad > materialDisponible.cantidad
-  //     ) {
-  //       alert(
-  //         'La cantidad ingresada supera la cantidad disponible del material.'
-  //       );
-  //       return; // Detener el flujo del programa si la validación no se cumple
-  //     }
-
-  //     listaMaterialesSeleccionados.push(materialSeleccionado);
-  //     // console.log('materialSeleccionado:', materialSeleccionado);
-
-  //     // Limpiar campos de selección de material y cantidad
-  //     selectMateriales.value = '';
-  //     inputCantidad.value = '';
-  //   } else {
-  //     alert('Por favor, selecciona un material y especifica la cantidad.');
-  //   }
+  // materiales.forEach((material) => {
+  //   const option = document.createElement('option');
+  //   option.value = material.id;
+  //   option.textContent = `${material.nombre} (${material.cantidad})`; // Agrega la cantidad al lado del nombre
+  //   selectMateriales.appendChild(option);
   // });
 
   // Event listener para el botón "Guardar"
-  btnGuardar.addEventListener('click', () => {
-    // Validar que se hayan seleccionado materiales y se haya ingresado un nombre de práctica
-    if (listaMaterialesSeleccionados.length === 0) {
-      alert(
-        'Por favor, ingresa un nombre de práctica y selecciona al menos un material.'
-      );
-    }
-  });
+
+  // TODO: HERE
+  // btnGuardar.addEventListener('click', () => {
+  //   // Validar que se hayan seleccionado materiales y se haya ingresado un nombre de práctica
+  //   if (listaMaterialesSeleccionados.length === 0) {
+  //     alert(
+  //       'Por favor, ingresa un nombre de práctica y selecciona al menos un material.'
+  //     );
+  //   }
+  // });
 
   window.electronAPI.executeQueries(
     ['SELECT * FROM practicas'],
@@ -102,25 +66,6 @@ window.addEventListener('DOMContentLoaded', () => {
     updateTable(data);
   });
 });
-
-// const updateMateriales = (data) => {
-//   materiales.length = 0; // Vaciar el arreglo de materiales existente
-
-//   data.map((material) => {
-//     materiales.push(material);
-//   });
-
-//   // Limpiar las opciones existentes en el select de materiales
-//   selectMateriales.innerHTML = '';
-
-//   // Generar las opciones para los materiales obtenidos de la base de datos
-//   materiales.forEach((material) => {
-//     const option = document.createElement('option');
-//     option.value = material.id;
-//     option.textContent = `${material.nombre} (${material.cantidad})`; // Agrega la cantidad al lado del nombre
-//     selectMateriales.appendChild(option);
-//   });
-// };
 
 const updateTable = async (data) => {
   // let mylist = document.getElementById('mylist');
@@ -150,28 +95,6 @@ const updateTable = async (data) => {
         </div>
     </div>
     `;
-
-    // const materialesPractica = await getMaterialesPractica(element.idPract);
-
-    // materialesPractica.forEach((material) => {
-    //   template += `<li>${material.nombre} (${material.cantidad})</li>`;
-    // });
-
-    // template += `
-    //       </ul>
-    //     </td>
-    //     <td class="centrado">${element.descPract}</td>
-    //     <td class="centrado">
-    //       <button class="btn btn-info" value="${element.idPract}">
-    //         Editar
-    //       </button>
-    //     </td>
-    //     <td class="centrado">
-    //       <button class="btn btn-danger" value="${element.idPract}">
-    //         Eliminar
-    //       </button>
-    //     </td>
-    //   </tr>`;
   }
 
   listadoPracticas.innerHTML = template;
@@ -184,17 +107,23 @@ const updateTable = async (data) => {
 
 const handleDelete = (event) => {
   const practicaId = event.target.value;
-  deletePractica(practicaId);
+  const imagenName = event.target.getAttribute('data-imagen');
+  deletePractica(practicaId, imagenName);
 };
 
 // Validar que los campos no vengan vacíos
 const isValidForm = () => {
   const nombreValue = nombre.value.trim();
   const descripcionValue = descripcion.value.trim();
-  // const cantidadValue = cantidad.value.trim();
   const fechaValue = fecha.value.trim();
+  const imgValue = imagen.value.trim();
 
-  if (nombreValue === '' || fechaValue === '' || descripcionValue === '') {
+  if (
+    nombreValue === '' ||
+    fechaValue === '' ||
+    descripcionValue === '' ||
+    imgValue === ''
+  ) {
     alert('Por favor, completa todos los campos');
     return false;
   }
@@ -222,53 +151,30 @@ const addPracticaRenderer = async () => {
     nombre: nombre.value,
     descripcion: descripcion.value,
     fecha: fecha.value,
+    imagen: imagen.files[0].path,
   };
 
-  if (listaMaterialesSeleccionados.length > 0) {
-    const practicaId = await window.electronAPI.addPractica(objPractica);
+  await window.electronAPI.addPractica(objPractica);
+  clearInput();
 
-    const values = {};
-
-    listaMaterialesSeleccionados.forEach((material) => {
-      values[material.id] = {
-        practicaId: practicaId,
-        materialId: material.id,
-        cantidad: material.cantidad,
-      };
-    });
-
-    await window.electronAPI.addPracticaMateriales({ 0: values }); // Enviar los valores dentro de un objeto con clave '0'
-
-    clearInput();
-    listaMaterialesSeleccionados = [];
-
-    window.electronAPI.executeQueries(
-      // ['SELECT * FROM practicas', 'SELECT * FROM materiales'],
-      ['SELECT * FROM practicas'],
-      (error, data) => {
-        if (error) {
-          console.error('Error al ejecutar la consulta:', error);
-        } else {
-          const [result1, result2] = data;
-          updateTable(result1);
-          // updateMateriales(result2);
-        }
-      }
-    );
-  }
+  window.electronAPI.executeQuery('SELECT * FROM practicas', (error, data) => {
+    if (error) {
+      console.error('Error al ejecutar la consulta:', error);
+    } else {
+      updateTable(data);
+    }
+  });
 };
 
 const clearInput = () => {
   nombre.value = '';
   fecha.value = '';
   descripcion.value = '';
-  cantidad.value = '';
+  imagen.value = '';
 };
 
-const deletePractica = async (practicaId) => {
-  await window.electronAPI.deletePractica(practicaId);
-  // console.log('Practica eliminada correctamente:', result);
-
+const deletePractica = async (practicaId, imagenName) => {
+  await window.electronAPI.deletePractica(practicaId, imagenName);
   // Petición a MySQL para obtener los datos actualizados
   window.electronAPI.executeQuery('SELECT * FROM practicas', (error, data) => {
     if (error) {
@@ -279,14 +185,14 @@ const deletePractica = async (practicaId) => {
   });
 };
 
-const getMaterialesPractica = async (idPractica) => {
-  try {
-    const materialesPractica = await window.electronAPI.getMaterialesPractica(
-      idPractica
-    );
-    return materialesPractica; // Accede al resultado correctamente
-  } catch (error) {
-    console.error('Error al obtener los materiales de la práctica:', error);
-    return [];
-  }
-};
+// const getMaterialesPractica = async (idPractica) => {
+//   try {
+//     const materialesPractica = await window.electronAPI.getMaterialesPractica(
+//       idPractica
+//     );
+//     return materialesPractica; // Accede al resultado correctamente
+//   } catch (error) {
+//     console.error('Error al obtener los materiales de la práctica:', error);
+//     return [];
+//   }
+// };

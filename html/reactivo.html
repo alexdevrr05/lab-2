@@ -19,15 +19,14 @@
     document.addEventListener('DOMContentLoaded', addNavigationComponent);
   </script>
 
-    <div class="container my-3 text-black">
         <div class="general">
-            <div class="col-sm-12 col-md-2 col-lg-2 col-xl-2 py-4 bg-white">
+            <div class="form-container">
                 <input type="text" id="idreactivo" hidden>
                 <h2>Reactivos</h2>
 
                 <form>
                     <div class="input-group mb-3">
-                      <input type="text" class="form-control" placeholder="grupo o nombre" aria-label="Buscar" aria-describedby="boton-buscar" id="busqueda-input">
+                      <input type="text" class="form-control" placeholder="Grupo o nombre" aria-label="Buscar" aria-describedby="boton-buscar" id="busqueda-input">
                       <div class="input-group-append">
                         <button class="btn btn-primary" type="button" id="boton-buscar">Buscar</button>
                       </div>
@@ -58,7 +57,7 @@
                     </div>
 
                     <div class="my-1">
-                        <table class="table">
+                        <table class="table text-white">
                             <thead>
                                 <tr>
                                     <th class="centrado">Código de colores</th>
@@ -76,6 +75,7 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <label for="imagen" class="form-label">Imagen</label>
                         <input type="file" class="form-control file-input" accept="image/*" id="imagen">
                     </div><br>
                     <div class="d-grid gap-2">
@@ -116,9 +116,6 @@
                 </div>
             </div>
     
-
-        </div>
-
     </div>
     <script src="../js/reactivo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
