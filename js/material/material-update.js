@@ -48,7 +48,7 @@ async function updateMaterial() {
   // Obtener los valores actualizados de los campos
   const nombre = document.getElementById('material-nombre').value;
   const clasificacion = document.getElementById('material-clasificacion').value;
-  const cantidad = document.getElementById('material-cantidad').value;
+  const cantidad = document.getElementById('material-cantidad').value || 0;
   const tamanio = document.getElementById('material-tamanio').value;
   const unidades = document.getElementById('material-unidades').value;
   const caractEsp = document.getElementById('material-caract_esp').value;
