@@ -38,9 +38,8 @@ window.addEventListener('DOMContentLoaded', () => {
             </div>
         </div>
         `;
-
-      listadoEquipos.innerHTML = template;
     });
+    listadoEquipos.innerHTML = template;
 
     // Agregar evento click a los botones de eliminar
     const deleteButtons = document.querySelectorAll('.btn.btn-danger');
@@ -100,10 +99,10 @@ botonBuscar.addEventListener('click', (event) => {
 });
 
 busquedaInput.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      handleBuscarEquipos();
-    }
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    handleBuscarEquipos();
+  }
 });
 
 const handleBuscarEquipos = async () => {

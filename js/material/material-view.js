@@ -40,9 +40,9 @@ window.addEventListener('DOMContentLoaded', () => {
             </div>
         </div>
         `;
-
-      listadoMateriales.innerHTML = template;
     });
+
+    listadoMateriales.innerHTML = template;
 
     // Agregar evento click a los botones de eliminar
     const deleteButtons = document.querySelectorAll('.btn.btn-danger');

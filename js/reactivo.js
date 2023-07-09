@@ -13,7 +13,6 @@ let imagen = document.getElementById('imagen');
 
 let btnform = document.getElementById('btnform');
 
-let listadoReactivos = document.getElementById('listado-reactivos');
 let title = document.getElementById('title');
 
 const botonBuscar = document.getElementById('boton-buscar');
@@ -21,17 +20,14 @@ const busquedaInput = document.getElementById('busqueda-input');
 
 window.addEventListener('DOMContentLoaded', () => {
   const updateTable = (data) => {
-    // let mylist = document.getElementById('mylist');
+    let listadoReactivos = document.getElementById('listado-reactivos');
     let template = '';
 
     title.textContent = 'Todos los reactivos';
 
-    listadoReactivos.style.display = '';
-
     if (data.length === 0) {
       title.textContent =
-        'Comienza creando una práctica o no hay resultados de la búsqueda';
-      listadoReactivos.style.display = 'none';
+        'Comienza creando una reactivo o no hay resultados de la búsqueda';
     }
 
     const list = data.reverse();

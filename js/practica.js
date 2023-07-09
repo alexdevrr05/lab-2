@@ -13,9 +13,66 @@ let title = document.getElementById('title');
 let listaMaterialesSeleccionados = [];
 const selectMateriales = document.getElementById('materiales');
 
+const botonBuscar = document.getElementById('boton-buscar');
+const busquedaInput = document.getElementById('busqueda-input');
+
 const materiales = [];
 
 window.addEventListener('DOMContentLoaded', () => {
+  const updateTable = async (data) => {
+    // let mylist = document.getElementById('mylist');
+    let template = '';
+
+    title.textContent = 'Todas las prácticas';
+
+    listadoPracticas.style.display = '';
+
+    if (data.length === 0) {
+      title.textContent =
+        'Comienza creando una práctica o no hay resultados de la búsqueda';
+      listadoPracticas.style.display = 'none';
+    }
+
+    const list = data.reverse();
+
+    // for (const element of data) {
+    list.forEach((element) => {
+      template += `
+      <div class="card">
+          <a href="practica-by-id.html?id=${element.idPract}">
+          <div class="card-container">
+              <img src="../uploads/${element.imagen}" alt="img-${element.idPract}" />
+          </div>
+          </a>
+          
+          <div class="contenido-card">
+            <p>${element.nomPract}</p>
+            <button class="btn btn-danger btn-sm delete" value="${element.idPract}" data-imagen="${element.imagen}">Eliminar</button>
+          </div>
+      </div>
+      `;
+    });
+
+    listadoPracticas.innerHTML = template;
+
+    const deleteButtons = document.querySelectorAll('.btn.btn-danger');
+    deleteButtons.forEach((button) => {
+      button.addEventListener('click', handleDelete);
+    });
+  };
+
+  window.electronAPI.executeQuery('SELECT * FROM practicas', (error, data) => {
+    if (error) {
+      console.error('Error al ejecutar la consulta:', error);
+    } else {
+      updateTable(data);
+    }
+  });
+
+  window.electronAPI.receiveQueryResult((event, data) => {
+    updateTable(data);
+  });
+
   // Obtiene los elementos del formulario
   // const inputCantidad = document.getElementById('cantidad');
   // const btnAgregarMaterial = document.getElementById('agregarMaterial');
@@ -40,75 +97,64 @@ window.addEventListener('DOMContentLoaded', () => {
   //   }
   // });
 
-  window.electronAPI.executeQueries(
-    ['SELECT * FROM practicas'],
-    (error, data) => {
-      if (error) {
-        console.error('Error al ejecutar la consulta:', error);
-      } else {
-        // const [result1, result2] = data;
-        const [result1] = data;
-        updateTable(result1);
-        // updateMateriales(result2);
-      }
-    }
-  );
+  // window.electronAPI.executeQueries(
+  //   ['SELECT * FROM practicas'],
+  //   (error, data) => {
+  //     if (error) {
+  //       console.error('Error al ejecutar la consulta:', error);
+  //     } else {
+  //       // const [result1, result2] = data;
+  //       const [result1] = data;
+  //       updateTable(result1);
+  //       // updateMateriales(result2);
+  //     }
+  //   }
+  // );
 
-  window.electronAPI.receiveQueriesResults((event, data) => {
-    // const [result1, result2] = data; // Obtener las respuestas individuales
-    const [result1] = data;
+  // window.electronAPI.receiveQueriesResults((event, data) => {
+  //   const [result1] = data;
 
-    updateTable(result1);
-    // updateMateriales(result2);
-  });
+  //   updateTable(result1);
+  //   // updateMateriales(result2);
+  // });
 
-  window.electronAPI.receiveQueryResult((event, data) => {
-    updateTable(data);
-  });
+  // window.electronAPI.receiveQueryResult((event, data) => {
+  //   updateTable(data);
+  // });
 });
-
-const updateTable = async (data) => {
-  // let mylist = document.getElementById('mylist');
-  let template = '';
-
-  title.textContent = 'Todas las prácticas';
-
-  listadoPracticas.style.display = '';
-
-  if (data.length === 0) {
-    title.textContent = 'Comienza creando una práctica';
-    listadoPracticas.style.display = 'none';
-  }
-
-  for (const element of data) {
-    template += `
-    <div class="card">
-        <a href="practica-by-id.html?id=${element.idPract}">
-        <div class="card-container">
-            <img src="../uploads/${element.imagen}" alt="img-${element.idPract}" />
-        </div>
-        </a>
-        
-        <div class="contenido-card">
-          <p>${element.nomPract}</p>
-          <button class="btn btn-danger btn-sm delete" value="${element.idPract}" data-imagen="${element.imagen}">Eliminar</button>
-        </div>
-    </div>
-    `;
-  }
-
-  listadoPracticas.innerHTML = template;
-
-  const deleteButtons = document.querySelectorAll('.btn.btn-danger');
-  deleteButtons.forEach((button) => {
-    button.addEventListener('click', handleDelete);
-  });
-};
 
 const handleDelete = (event) => {
   const practicaId = event.target.value;
   const imagenName = event.target.getAttribute('data-imagen');
   deletePractica(practicaId, imagenName);
+};
+
+botonBuscar.addEventListener('click', (event) => {
+  event.preventDefault();
+  handleBuscarPracticas();
+});
+
+busquedaInput.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    handleBuscarPracticas();
+  }
+});
+
+const handleBuscarPracticas = async () => {
+  const busquedaInput = document.getElementById('busqueda-input');
+  const query = busquedaInput.value.trim();
+
+  window.electronAPI.executeQuery(
+    `SELECT * FROM practicas WHERE nomPract LIKE '%${query}%'`,
+    (error, data) => {
+      if (error) {
+        console.error('Error al ejecutar la consulta:', error);
+      } else {
+        updateTable(data);
+      }
+    }
+  );
 };
 
 // Validar que los campos no vengan vacíos

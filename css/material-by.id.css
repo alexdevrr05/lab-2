@@ -41,3 +41,7 @@ ul {
 .example-container {
     display: flex;
 }
+
+#update-button {
+    max-width: 50%;
+}

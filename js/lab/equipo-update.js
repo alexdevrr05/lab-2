@@ -43,7 +43,7 @@ async function updateEquipo() {
 
   // Obtener los valores actualizados de los campos
   const nombre = document.getElementById('equipo-nombre').value;
-  const cantidad = document.getElementById('equipo-cantidad').value;
+  const cantidad = document.getElementById('equipo-cantidad').value || 0;
   const practica = document.getElementById('equipo-practica').value;
   const material = document.getElementById('equipo-material').value;
   const unidades = document.getElementById('equipo-unidades').value;
